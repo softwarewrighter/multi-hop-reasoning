@@ -1,0 +1,4239 @@
+{
+  "version": "1.0",
+  "domain": "software_troubleshooting",
+  "entities": [
+    {
+      "id": "TLSHandshakeError",
+      "label": "TLS Handshake Error",
+      "type": "symptom"
+    },
+    {
+      "id": "SSLCertificateError",
+      "label": "SSL Certificate Error",
+      "type": "symptom"
+    },
+    {
+      "id": "ConnectionTimeout",
+      "label": "Connection Timeout",
+      "type": "symptom"
+    },
+    {
+      "id": "ConnectionRefused",
+      "label": "Connection Refused",
+      "type": "symptom"
+    },
+    {
+      "id": "DNSResolutionFailure",
+      "label": "DNS Resolution Failure",
+      "type": "symptom"
+    },
+    {
+      "id": "HighLatency",
+      "label": "High Latency",
+      "type": "symptom"
+    },
+    {
+      "id": "PacketLoss",
+      "label": "Packet Loss",
+      "type": "symptom"
+    },
+    {
+      "id": "ServiceUnavailable",
+      "label": "Service Unavailable (503)",
+      "type": "symptom"
+    },
+    {
+      "id": "GatewayTimeout",
+      "label": "Gateway Timeout (504)",
+      "type": "symptom"
+    },
+    {
+      "id": "InternalServerError",
+      "label": "Internal Server Error (500)",
+      "type": "symptom"
+    },
+    {
+      "id": "BadGateway",
+      "label": "Bad Gateway (502)",
+      "type": "symptom"
+    },
+    {
+      "id": "OutOfMemoryError",
+      "label": "Out of Memory Error",
+      "type": "symptom"
+    },
+    {
+      "id": "HighCPUUsage",
+      "label": "High CPU Usage",
+      "type": "symptom"
+    },
+    {
+      "id": "DiskSpaceFull",
+      "label": "Disk Space Full",
+      "type": "symptom"
+    },
+    {
+      "id": "SlowQueryPerformance",
+      "label": "Slow Query Performance",
+      "type": "symptom"
+    },
+    {
+      "id": "DatabaseConnectionError",
+      "label": "Database Connection Error",
+      "type": "symptom"
+    },
+    {
+      "id": "AuthenticationFailure",
+      "label": "Authentication Failure",
+      "type": "symptom"
+    },
+    {
+      "id": "AuthorizationDenied",
+      "label": "Authorization Denied (403)",
+      "type": "symptom"
+    },
+    {
+      "id": "TokenExpired",
+      "label": "Token Expired Error",
+      "type": "symptom"
+    },
+    {
+      "id": "RateLimitExceeded",
+      "label": "Rate Limit Exceeded (429)",
+      "type": "symptom"
+    },
+    {
+      "id": "CORSError",
+      "label": "CORS Error",
+      "type": "symptom"
+    },
+    {
+      "id": "JSONParseError",
+      "label": "JSON Parse Error",
+      "type": "symptom"
+    },
+    {
+      "id": "NullPointerException",
+      "label": "Null Pointer Exception",
+      "type": "symptom"
+    },
+    {
+      "id": "StackOverflowError",
+      "label": "Stack Overflow Error",
+      "type": "symptom"
+    },
+    {
+      "id": "SegmentationFault",
+      "label": "Segmentation Fault",
+      "type": "symptom"
+    },
+    {
+      "id": "FileNotFound",
+      "label": "File Not Found Error",
+      "type": "symptom"
+    },
+    {
+      "id": "PermissionDenied",
+      "label": "Permission Denied Error",
+      "type": "symptom"
+    },
+    {
+      "id": "ProcessCrash",
+      "label": "Process Crash",
+      "type": "symptom"
+    },
+    {
+      "id": "ContainerRestartLoop",
+      "label": "Container Restart Loop",
+      "type": "symptom"
+    },
+    {
+      "id": "PodOOMKilled",
+      "label": "Pod OOMKilled",
+      "type": "symptom"
+    },
+    {
+      "id": "DeploymentFailed",
+      "label": "Deployment Failed",
+      "type": "symptom"
+    },
+    {
+      "id": "HealthCheckFailed",
+      "label": "Health Check Failed",
+      "type": "symptom"
+    },
+    {
+      "id": "LoadBalancerError",
+      "label": "Load Balancer Error",
+      "type": "symptom"
+    },
+    {
+      "id": "CacheInvalidation",
+      "label": "Cache Invalidation Issue",
+      "type": "symptom"
+    },
+    {
+      "id": "StaleData",
+      "label": "Stale Data Returned",
+      "type": "symptom"
+    },
+    {
+      "id": "DataInconsistency",
+      "label": "Data Inconsistency",
+      "type": "symptom"
+    },
+    {
+      "id": "MessageQueueBacklog",
+      "label": "Message Queue Backlog",
+      "type": "symptom"
+    },
+    {
+      "id": "DeadLetterQueue",
+      "label": "Dead Letter Queue Growing",
+      "type": "symptom"
+    },
+    {
+      "id": "ReplicationLag",
+      "label": "Replication Lag",
+      "type": "symptom"
+    },
+    {
+      "id": "SplitBrain",
+      "label": "Split Brain Scenario",
+      "type": "symptom"
+    },
+    {
+      "id": "ClockSkew",
+      "label": "Clock Skew",
+      "type": "cause"
+    },
+    {
+      "id": "CertificateExpired",
+      "label": "Certificate Expired",
+      "type": "cause"
+    },
+    {
+      "id": "CertificateMismatch",
+      "label": "Certificate Mismatch",
+      "type": "cause"
+    },
+    {
+      "id": "FirewallBlocking",
+      "label": "Firewall Blocking",
+      "type": "cause"
+    },
+    {
+      "id": "PortNotOpen",
+      "label": "Port Not Open",
+      "type": "cause"
+    },
+    {
+      "id": "NetworkPartition",
+      "label": "Network Partition",
+      "type": "cause"
+    },
+    {
+      "id": "DNSMisconfiguration",
+      "label": "DNS Misconfiguration",
+      "type": "cause"
+    },
+    {
+      "id": "IncorrectHostname",
+      "label": "Incorrect Hostname",
+      "type": "cause"
+    },
+    {
+      "id": "ProxyMisconfiguration",
+      "label": "Proxy Misconfiguration",
+      "type": "cause"
+    },
+    {
+      "id": "MemoryLeak",
+      "label": "Memory Leak",
+      "type": "cause"
+    },
+    {
+      "id": "InfiniteLoop",
+      "label": "Infinite Loop",
+      "type": "cause"
+    },
+    {
+      "id": "DeepRecursion",
+      "label": "Deep Recursion",
+      "type": "cause"
+    },
+    {
+      "id": "ResourceExhaustion",
+      "label": "Resource Exhaustion",
+      "type": "cause"
+    },
+    {
+      "id": "ThreadDeadlock",
+      "label": "Thread Deadlock",
+      "type": "cause"
+    },
+    {
+      "id": "ConnectionPoolExhausted",
+      "label": "Connection Pool Exhausted",
+      "type": "cause"
+    },
+    {
+      "id": "UnhandledException",
+      "label": "Unhandled Exception",
+      "type": "cause"
+    },
+    {
+      "id": "MissingDependency",
+      "label": "Missing Dependency",
+      "type": "cause"
+    },
+    {
+      "id": "VersionMismatch",
+      "label": "Version Mismatch",
+      "type": "cause"
+    },
+    {
+      "id": "ConfigurationError",
+      "label": "Configuration Error",
+      "type": "cause"
+    },
+    {
+      "id": "EnvironmentVariableMissing",
+      "label": "Environment Variable Missing",
+      "type": "cause"
+    },
+    {
+      "id": "InvalidCredentials",
+      "label": "Invalid Credentials",
+      "type": "cause"
+    },
+    {
+      "id": "ExpiredCredentials",
+      "label": "Expired Credentials",
+      "type": "cause"
+    },
+    {
+      "id": "IncorrectPermissions",
+      "label": "Incorrect Permissions",
+      "type": "cause"
+    },
+    {
+      "id": "RoleBindingMissing",
+      "label": "Role Binding Missing",
+      "type": "cause"
+    },
+    {
+      "id": "ResourceQuotaExceeded",
+      "label": "Resource Quota Exceeded",
+      "type": "cause"
+    },
+    {
+      "id": "InsufficientReplicas",
+      "label": "Insufficient Replicas",
+      "type": "cause"
+    },
+    {
+      "id": "ImagePullFailure",
+      "label": "Image Pull Failure",
+      "type": "cause"
+    },
+    {
+      "id": "SecretNotFound",
+      "label": "Secret Not Found",
+      "type": "cause"
+    },
+    {
+      "id": "ConfigMapMissing",
+      "label": "ConfigMap Missing",
+      "type": "cause"
+    },
+    {
+      "id": "PersistentVolumeError",
+      "label": "Persistent Volume Error",
+      "type": "cause"
+    },
+    {
+      "id": "NodeNotReady",
+      "label": "Node Not Ready",
+      "type": "cause"
+    },
+    {
+      "id": "SchedulingFailure",
+      "label": "Scheduling Failure",
+      "type": "cause"
+    },
+    {
+      "id": "IngressMisconfiguration",
+      "label": "Ingress Misconfiguration",
+      "type": "cause"
+    },
+    {
+      "id": "ServiceMeshError",
+      "label": "Service Mesh Error",
+      "type": "cause"
+    },
+    {
+      "id": "SidecarCrash",
+      "label": "Sidecar Crash",
+      "type": "cause"
+    },
+    {
+      "id": "MissingIndex",
+      "label": "Missing Index",
+      "type": "cause"
+    },
+    {
+      "id": "TableLock",
+      "label": "Table Lock",
+      "type": "cause"
+    },
+    {
+      "id": "QueryNotOptimized",
+      "label": "Query Not Optimized",
+      "type": "cause"
+    },
+    {
+      "id": "TooManyConnections",
+      "label": "Too Many Connections",
+      "type": "cause"
+    },
+    {
+      "id": "SchemaChange",
+      "label": "Schema Change",
+      "type": "cause"
+    },
+    {
+      "id": "DataCorruption",
+      "label": "Data Corruption",
+      "type": "cause"
+    },
+    {
+      "id": "TransactionDeadlock",
+      "label": "Transaction Deadlock",
+      "type": "cause"
+    },
+    {
+      "id": "CachePoisoning",
+      "label": "Cache Poisoning",
+      "type": "cause"
+    },
+    {
+      "id": "TTLTooLong",
+      "label": "TTL Too Long",
+      "type": "cause"
+    },
+    {
+      "id": "TTLTooShort",
+      "label": "TTL Too Short",
+      "type": "cause"
+    },
+    {
+      "id": "ConsumerLag",
+      "label": "Consumer Lag",
+      "type": "cause"
+    },
+    {
+      "id": "ProducerOverload",
+      "label": "Producer Overload",
+      "type": "cause"
+    },
+    {
+      "id": "MessageSerialization",
+      "label": "Message Serialization Error",
+      "type": "cause"
+    },
+    {
+      "id": "BrokerFailure",
+      "label": "Broker Failure",
+      "type": "cause"
+    },
+    {
+      "id": "PartitionLeaderFailure",
+      "label": "Partition Leader Failure",
+      "type": "cause"
+    },
+    {
+      "id": "NTPsync",
+      "label": "NTP Sync",
+      "type": "fix"
+    },
+    {
+      "id": "RenewCertificate",
+      "label": "Renew Certificate",
+      "type": "fix"
+    },
+    {
+      "id": "UpdateCertificate",
+      "label": "Update Certificate",
+      "type": "fix"
+    },
+    {
+      "id": "ConfigureFirewall",
+      "label": "Configure Firewall",
+      "type": "fix"
+    },
+    {
+      "id": "OpenPort",
+      "label": "Open Port",
+      "type": "fix"
+    },
+    {
+      "id": "RestartService",
+      "label": "Restart Service",
+      "type": "fix"
+    },
+    {
+      "id": "IncreaseMemory",
+      "label": "Increase Memory",
+      "type": "fix"
+    },
+    {
+      "id": "IncreaseTimeout",
+      "label": "Increase Timeout",
+      "type": "fix"
+    },
+    {
+      "id": "AddReplicas",
+      "label": "Add Replicas",
+      "type": "fix"
+    },
+    {
+      "id": "ScaleHorizontally",
+      "label": "Scale Horizontally",
+      "type": "fix"
+    },
+    {
+      "id": "FixDNSConfig",
+      "label": "Fix DNS Configuration",
+      "type": "fix"
+    },
+    {
+      "id": "UpdateHostsFile",
+      "label": "Update Hosts File",
+      "type": "fix"
+    },
+    {
+      "id": "FixProxySettings",
+      "label": "Fix Proxy Settings",
+      "type": "fix"
+    },
+    {
+      "id": "PatchCode",
+      "label": "Patch Code",
+      "type": "fix"
+    },
+    {
+      "id": "UpdateDependency",
+      "label": "Update Dependency",
+      "type": "fix"
+    },
+    {
+      "id": "RollbackVersion",
+      "label": "Rollback Version",
+      "type": "fix"
+    },
+    {
+      "id": "FixConfiguration",
+      "label": "Fix Configuration",
+      "type": "fix"
+    },
+    {
+      "id": "SetEnvironmentVariable",
+      "label": "Set Environment Variable",
+      "type": "fix"
+    },
+    {
+      "id": "RotateCredentials",
+      "label": "Rotate Credentials",
+      "type": "fix"
+    },
+    {
+      "id": "UpdatePermissions",
+      "label": "Update Permissions",
+      "type": "fix"
+    },
+    {
+      "id": "CreateRoleBinding",
+      "label": "Create Role Binding",
+      "type": "fix"
+    },
+    {
+      "id": "IncreaseQuota",
+      "label": "Increase Quota",
+      "type": "fix"
+    },
+    {
+      "id": "FixImageTag",
+      "label": "Fix Image Tag",
+      "type": "fix"
+    },
+    {
+      "id": "CreateSecret",
+      "label": "Create Secret",
+      "type": "fix"
+    },
+    {
+      "id": "CreateConfigMap",
+      "label": "Create ConfigMap",
+      "type": "fix"
+    },
+    {
+      "id": "ProvisionVolume",
+      "label": "Provision Volume",
+      "type": "fix"
+    },
+    {
+      "id": "DrainNode",
+      "label": "Drain Node",
+      "type": "fix"
+    },
+    {
+      "id": "CordonNode",
+      "label": "Cordon Node",
+      "type": "fix"
+    },
+    {
+      "id": "FixIngress",
+      "label": "Fix Ingress",
+      "type": "fix"
+    },
+    {
+      "id": "RestartSidecar",
+      "label": "Restart Sidecar",
+      "type": "fix"
+    },
+    {
+      "id": "CreateIndex",
+      "label": "Create Index",
+      "type": "fix"
+    },
+    {
+      "id": "OptimizeQuery",
+      "label": "Optimize Query",
+      "type": "fix"
+    },
+    {
+      "id": "IncreaseConnectionPool",
+      "label": "Increase Connection Pool",
+      "type": "fix"
+    },
+    {
+      "id": "ApplySchemaMigration",
+      "label": "Apply Schema Migration",
+      "type": "fix"
+    },
+    {
+      "id": "RepairData",
+      "label": "Repair Data",
+      "type": "fix"
+    },
+    {
+      "id": "ClearCache",
+      "label": "Clear Cache",
+      "type": "fix"
+    },
+    {
+      "id": "AdjustTTL",
+      "label": "Adjust TTL",
+      "type": "fix"
+    },
+    {
+      "id": "AddConsumers",
+      "label": "Add Consumers",
+      "type": "fix"
+    },
+    {
+      "id": "ThrottleProducers",
+      "label": "Throttle Producers",
+      "type": "fix"
+    },
+    {
+      "id": "FixSerialization",
+      "label": "Fix Serialization",
+      "type": "fix"
+    },
+    {
+      "id": "FailoverBroker",
+      "label": "Failover Broker",
+      "type": "fix"
+    },
+    {
+      "id": "RebalancePartitions",
+      "label": "Rebalance Partitions",
+      "type": "fix"
+    },
+    {
+      "id": "EnableCORS",
+      "label": "Enable CORS",
+      "type": "fix"
+    },
+    {
+      "id": "ValidateJSON",
+      "label": "Validate JSON",
+      "type": "fix"
+    },
+    {
+      "id": "AddNullCheck",
+      "label": "Add Null Check",
+      "type": "fix"
+    },
+    {
+      "id": "IncreasStackSize",
+      "label": "Increase Stack Size",
+      "type": "fix"
+    },
+    {
+      "id": "FixMemoryAccess",
+      "label": "Fix Memory Access",
+      "type": "fix"
+    },
+    {
+      "id": "CleanupDiskSpace",
+      "label": "Cleanup Disk Space",
+      "type": "fix"
+    },
+    {
+      "id": "EnableLogRotation",
+      "label": "Enable Log Rotation",
+      "type": "fix"
+    },
+    {
+      "id": "CheckNetworkLogs",
+      "label": "Check Network Logs",
+      "type": "diagnostic"
+    },
+    {
+      "id": "RunTraceroute",
+      "label": "Run Traceroute",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckDNS",
+      "label": "Check DNS",
+      "type": "diagnostic"
+    },
+    {
+      "id": "VerifyCertificate",
+      "label": "Verify Certificate",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckFirewallRules",
+      "label": "Check Firewall Rules",
+      "type": "diagnostic"
+    },
+    {
+      "id": "AnalyzeHeapDump",
+      "label": "Analyze Heap Dump",
+      "type": "diagnostic"
+    },
+    {
+      "id": "ProfileCPU",
+      "label": "Profile CPU",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckDiskUsage",
+      "label": "Check Disk Usage",
+      "type": "diagnostic"
+    },
+    {
+      "id": "AnalyzeLogs",
+      "label": "Analyze Logs",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckMetrics",
+      "label": "Check Metrics",
+      "type": "diagnostic"
+    },
+    {
+      "id": "RunHealthCheck",
+      "label": "Run Health Check",
+      "type": "diagnostic"
+    },
+    {
+      "id": "DescribePod",
+      "label": "Describe Pod",
+      "type": "diagnostic"
+    },
+    {
+      "id": "GetEvents",
+      "label": "Get Events",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckResourceUsage",
+      "label": "Check Resource Usage",
+      "type": "diagnostic"
+    },
+    {
+      "id": "InspectContainer",
+      "label": "Inspect Container",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckQuotas",
+      "label": "Check Quotas",
+      "type": "diagnostic"
+    },
+    {
+      "id": "TestConnection",
+      "label": "Test Connection",
+      "type": "diagnostic"
+    },
+    {
+      "id": "RunExplainPlan",
+      "label": "Run Explain Plan",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckLocks",
+      "label": "Check Locks",
+      "type": "diagnostic"
+    },
+    {
+      "id": "MonitorReplication",
+      "label": "Monitor Replication",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckCacheStats",
+      "label": "Check Cache Stats",
+      "type": "diagnostic"
+    },
+    {
+      "id": "InspectQueue",
+      "label": "Inspect Queue",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckConsumerGroups",
+      "label": "Check Consumer Groups",
+      "type": "diagnostic"
+    },
+    {
+      "id": "VerifyTokens",
+      "label": "Verify Tokens",
+      "type": "diagnostic"
+    },
+    {
+      "id": "AuditPermissions",
+      "label": "Audit Permissions",
+      "type": "diagnostic"
+    },
+    {
+      "id": "TraceRequests",
+      "label": "Trace Requests",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckServiceMesh",
+      "label": "Check Service Mesh",
+      "type": "diagnostic"
+    },
+    {
+      "id": "ValidateConfig",
+      "label": "Validate Config",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckEnvVars",
+      "label": "Check Environment Variables",
+      "type": "diagnostic"
+    },
+    {
+      "id": "TestAuthentication",
+      "label": "Test Authentication",
+      "type": "diagnostic"
+    },
+    {
+      "id": "ProbeEndpoint",
+      "label": "Probe Endpoint",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckSSLHandshake",
+      "label": "Check SSL Handshake",
+      "type": "diagnostic"
+    },
+    {
+      "id": "AnalyzeStackTrace",
+      "label": "Analyze Stack Trace",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckThreadDump",
+      "label": "Check Thread Dump",
+      "type": "diagnostic"
+    },
+    {
+      "id": "MonitorConnections",
+      "label": "Monitor Connections",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckTimeSync",
+      "label": "Check Time Sync",
+      "type": "diagnostic"
+    },
+    {
+      "id": "VerifyDNSRecords",
+      "label": "Verify DNS Records",
+      "type": "diagnostic"
+    },
+    {
+      "id": "TestLoadBalancer",
+      "label": "Test Load Balancer",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckIngress",
+      "label": "Check Ingress",
+      "type": "diagnostic"
+    },
+    {
+      "id": "InspectVolumes",
+      "label": "Inspect Volumes",
+      "type": "diagnostic"
+    },
+    {
+      "id": "CheckPVCStatus",
+      "label": "Check PVC Status",
+      "type": "diagnostic"
+    },
+    {
+      "id": "MonitorBrokers",
+      "label": "Monitor Brokers",
+      "type": "diagnostic"
+    },
+    {
+      "id": "SSLTool",
+      "label": "OpenSSL Tool",
+      "type": "tool"
+    },
+    {
+      "id": "NetcatTool",
+      "label": "Netcat Tool",
+      "type": "tool"
+    },
+    {
+      "id": "CurlTool",
+      "label": "Curl Tool",
+      "type": "tool"
+    },
+    {
+      "id": "DigTool",
+      "label": "Dig Tool",
+      "type": "tool"
+    },
+    {
+      "id": "NsLookupTool",
+      "label": "NsLookup Tool",
+      "type": "tool"
+    },
+    {
+      "id": "TcpdumpTool",
+      "label": "Tcpdump Tool",
+      "type": "tool"
+    },
+    {
+      "id": "WiresharkTool",
+      "label": "Wireshark Tool",
+      "type": "tool"
+    },
+    {
+      "id": "TopTool",
+      "label": "Top Tool",
+      "type": "tool"
+    },
+    {
+      "id": "HtopTool",
+      "label": "Htop Tool",
+      "type": "tool"
+    },
+    {
+      "id": "VmstatTool",
+      "label": "Vmstat Tool",
+      "type": "tool"
+    },
+    {
+      "id": "IostatTool",
+      "label": "Iostat Tool",
+      "type": "tool"
+    },
+    {
+      "id": "KubectlTool",
+      "label": "Kubectl Tool",
+      "type": "tool"
+    },
+    {
+      "id": "DockerTool",
+      "label": "Docker Tool",
+      "type": "tool"
+    },
+    {
+      "id": "PrometheusTool",
+      "label": "Prometheus Tool",
+      "type": "tool"
+    },
+    {
+      "id": "GrafanaTool",
+      "label": "Grafana Tool",
+      "type": "tool"
+    },
+    {
+      "id": "JaegerTool",
+      "label": "Jaeger Tool",
+      "type": "tool"
+    },
+    {
+      "id": "ZipkinTool",
+      "label": "Zipkin Tool",
+      "type": "tool"
+    },
+    {
+      "id": "PgAdminTool",
+      "label": "PgAdmin Tool",
+      "type": "tool"
+    },
+    {
+      "id": "MySQLWorkbench",
+      "label": "MySQL Workbench",
+      "type": "tool"
+    },
+    {
+      "id": "RedisCliTool",
+      "label": "Redis CLI Tool",
+      "type": "tool"
+    },
+    {
+      "id": "KafkaConsoleTool",
+      "label": "Kafka Console Tool",
+      "type": "tool"
+    },
+    {
+      "id": "RabbitMQAdmin",
+      "label": "RabbitMQ Admin",
+      "type": "tool"
+    },
+    {
+      "id": "JVisualVM",
+      "label": "JVisualVM Tool",
+      "type": "tool"
+    },
+    {
+      "id": "GDBTool",
+      "label": "GDB Tool",
+      "type": "tool"
+    },
+    {
+      "id": "StraceTool",
+      "label": "Strace Tool",
+      "type": "tool"
+    },
+    {
+      "id": "LsofTool",
+      "label": "Lsof Tool",
+      "type": "tool"
+    },
+    {
+      "id": "SsTool",
+      "label": "Ss Tool",
+      "type": "tool"
+    },
+    {
+      "id": "NetstatTool",
+      "label": "Netstat Tool",
+      "type": "tool"
+    },
+    {
+      "id": "PsTool",
+      "label": "Ps Tool",
+      "type": "tool"
+    },
+    {
+      "id": "DfTool",
+      "label": "Df Tool",
+      "type": "tool"
+    },
+    {
+      "id": "DuTool",
+      "label": "Du Tool",
+      "type": "tool"
+    }
+  ],
+  "relations": [
+    {
+      "id": "caused_by",
+      "label": "caused by"
+    },
+    {
+      "id": "fixed_by",
+      "label": "fixed by"
+    },
+    {
+      "id": "diagnosed_by",
+      "label": "diagnosed by"
+    },
+    {
+      "id": "uses_tool",
+      "label": "uses tool"
+    },
+    {
+      "id": "leads_to",
+      "label": "leads to"
+    },
+    {
+      "id": "related_to",
+      "label": "related to"
+    }
+  ],
+  "edges": [
+    {
+      "src": "TLSHandshakeError",
+      "rel": "caused_by",
+      "dst": "ClockSkew"
+    },
+    {
+      "src": "TLSHandshakeError",
+      "rel": "caused_by",
+      "dst": "CertificateExpired"
+    },
+    {
+      "src": "TLSHandshakeError",
+      "rel": "caused_by",
+      "dst": "CertificateMismatch"
+    },
+    {
+      "src": "TLSHandshakeError",
+      "rel": "diagnosed_by",
+      "dst": "CheckSSLHandshake"
+    },
+    {
+      "src": "TLSHandshakeError",
+      "rel": "diagnosed_by",
+      "dst": "VerifyCertificate"
+    },
+    {
+      "src": "ClockSkew",
+      "rel": "fixed_by",
+      "dst": "NTPsync"
+    },
+    {
+      "src": "ClockSkew",
+      "rel": "diagnosed_by",
+      "dst": "CheckTimeSync"
+    },
+    {
+      "src": "CertificateExpired",
+      "rel": "fixed_by",
+      "dst": "RenewCertificate"
+    },
+    {
+      "src": "CertificateMismatch",
+      "rel": "fixed_by",
+      "dst": "UpdateCertificate"
+    },
+    {
+      "src": "SSLCertificateError",
+      "rel": "caused_by",
+      "dst": "CertificateExpired"
+    },
+    {
+      "src": "SSLCertificateError",
+      "rel": "caused_by",
+      "dst": "CertificateMismatch"
+    },
+    {
+      "src": "SSLCertificateError",
+      "rel": "diagnosed_by",
+      "dst": "VerifyCertificate"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "caused_by",
+      "dst": "FirewallBlocking"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "caused_by",
+      "dst": "NetworkPartition"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "caused_by",
+      "dst": "HighLatency"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "diagnosed_by",
+      "dst": "RunTraceroute"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "diagnosed_by",
+      "dst": "CheckNetworkLogs"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "fixed_by",
+      "dst": "IncreaseTimeout"
+    },
+    {
+      "src": "ConnectionRefused",
+      "rel": "caused_by",
+      "dst": "PortNotOpen"
+    },
+    {
+      "src": "ConnectionRefused",
+      "rel": "caused_by",
+      "dst": "FirewallBlocking"
+    },
+    {
+      "src": "ConnectionRefused",
+      "rel": "diagnosed_by",
+      "dst": "CheckFirewallRules"
+    },
+    {
+      "src": "PortNotOpen",
+      "rel": "fixed_by",
+      "dst": "OpenPort"
+    },
+    {
+      "src": "FirewallBlocking",
+      "rel": "fixed_by",
+      "dst": "ConfigureFirewall"
+    },
+    {
+      "src": "FirewallBlocking",
+      "rel": "diagnosed_by",
+      "dst": "CheckFirewallRules"
+    },
+    {
+      "src": "DNSResolutionFailure",
+      "rel": "caused_by",
+      "dst": "DNSMisconfiguration"
+    },
+    {
+      "src": "DNSResolutionFailure",
+      "rel": "caused_by",
+      "dst": "IncorrectHostname"
+    },
+    {
+      "src": "DNSResolutionFailure",
+      "rel": "diagnosed_by",
+      "dst": "CheckDNS"
+    },
+    {
+      "src": "DNSResolutionFailure",
+      "rel": "diagnosed_by",
+      "dst": "VerifyDNSRecords"
+    },
+    {
+      "src": "DNSMisconfiguration",
+      "rel": "fixed_by",
+      "dst": "FixDNSConfig"
+    },
+    {
+      "src": "IncorrectHostname",
+      "rel": "fixed_by",
+      "dst": "UpdateHostsFile"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "caused_by",
+      "dst": "NetworkPartition"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "caused_by",
+      "dst": "ResourceExhaustion"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "diagnosed_by",
+      "dst": "RunTraceroute"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "PacketLoss",
+      "rel": "caused_by",
+      "dst": "NetworkPartition"
+    },
+    {
+      "src": "PacketLoss",
+      "rel": "diagnosed_by",
+      "dst": "RunTraceroute"
+    },
+    {
+      "src": "PacketLoss",
+      "rel": "diagnosed_by",
+      "dst": "CheckNetworkLogs"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "caused_by",
+      "dst": "InsufficientReplicas"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "caused_by",
+      "dst": "ResourceExhaustion"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "caused_by",
+      "dst": "HealthCheckFailed"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "diagnosed_by",
+      "dst": "RunHealthCheck"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "fixed_by",
+      "dst": "AddReplicas"
+    },
+    {
+      "src": "InsufficientReplicas",
+      "rel": "fixed_by",
+      "dst": "AddReplicas"
+    },
+    {
+      "src": "InsufficientReplicas",
+      "rel": "fixed_by",
+      "dst": "ScaleHorizontally"
+    },
+    {
+      "src": "GatewayTimeout",
+      "rel": "caused_by",
+      "dst": "HighLatency"
+    },
+    {
+      "src": "GatewayTimeout",
+      "rel": "caused_by",
+      "dst": "ConnectionPoolExhausted"
+    },
+    {
+      "src": "GatewayTimeout",
+      "rel": "diagnosed_by",
+      "dst": "TraceRequests"
+    },
+    {
+      "src": "GatewayTimeout",
+      "rel": "fixed_by",
+      "dst": "IncreaseTimeout"
+    },
+    {
+      "src": "ConnectionPoolExhausted",
+      "rel": "fixed_by",
+      "dst": "IncreaseConnectionPool"
+    },
+    {
+      "src": "ConnectionPoolExhausted",
+      "rel": "diagnosed_by",
+      "dst": "MonitorConnections"
+    },
+    {
+      "src": "InternalServerError",
+      "rel": "caused_by",
+      "dst": "UnhandledException"
+    },
+    {
+      "src": "InternalServerError",
+      "rel": "caused_by",
+      "dst": "ConfigurationError"
+    },
+    {
+      "src": "InternalServerError",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "InternalServerError",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeStackTrace"
+    },
+    {
+      "src": "UnhandledException",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "ConfigurationError",
+      "rel": "fixed_by",
+      "dst": "FixConfiguration"
+    },
+    {
+      "src": "ConfigurationError",
+      "rel": "diagnosed_by",
+      "dst": "ValidateConfig"
+    },
+    {
+      "src": "BadGateway",
+      "rel": "caused_by",
+      "dst": "ProxyMisconfiguration"
+    },
+    {
+      "src": "BadGateway",
+      "rel": "caused_by",
+      "dst": "ServiceMeshError"
+    },
+    {
+      "src": "BadGateway",
+      "rel": "diagnosed_by",
+      "dst": "CheckServiceMesh"
+    },
+    {
+      "src": "ProxyMisconfiguration",
+      "rel": "fixed_by",
+      "dst": "FixProxySettings"
+    },
+    {
+      "src": "ServiceMeshError",
+      "rel": "fixed_by",
+      "dst": "RestartSidecar"
+    },
+    {
+      "src": "ServiceMeshError",
+      "rel": "diagnosed_by",
+      "dst": "CheckServiceMesh"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "caused_by",
+      "dst": "MemoryLeak"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "caused_by",
+      "dst": "ResourceQuotaExceeded"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeHeapDump"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "diagnosed_by",
+      "dst": "CheckResourceUsage"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "fixed_by",
+      "dst": "IncreaseMemory"
+    },
+    {
+      "src": "MemoryLeak",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "MemoryLeak",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeHeapDump"
+    },
+    {
+      "src": "ResourceQuotaExceeded",
+      "rel": "fixed_by",
+      "dst": "IncreaseQuota"
+    },
+    {
+      "src": "ResourceQuotaExceeded",
+      "rel": "diagnosed_by",
+      "dst": "CheckQuotas"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "caused_by",
+      "dst": "InfiniteLoop"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "caused_by",
+      "dst": "ResourceExhaustion"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "diagnosed_by",
+      "dst": "ProfileCPU"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "diagnosed_by",
+      "dst": "CheckThreadDump"
+    },
+    {
+      "src": "InfiniteLoop",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "InfiniteLoop",
+      "rel": "diagnosed_by",
+      "dst": "ProfileCPU"
+    },
+    {
+      "src": "ResourceExhaustion",
+      "rel": "fixed_by",
+      "dst": "ScaleHorizontally"
+    },
+    {
+      "src": "ResourceExhaustion",
+      "rel": "diagnosed_by",
+      "dst": "CheckResourceUsage"
+    },
+    {
+      "src": "DiskSpaceFull",
+      "rel": "caused_by",
+      "dst": "DataCorruption"
+    },
+    {
+      "src": "DiskSpaceFull",
+      "rel": "diagnosed_by",
+      "dst": "CheckDiskUsage"
+    },
+    {
+      "src": "DiskSpaceFull",
+      "rel": "fixed_by",
+      "dst": "CleanupDiskSpace"
+    },
+    {
+      "src": "DiskSpaceFull",
+      "rel": "fixed_by",
+      "dst": "EnableLogRotation"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "caused_by",
+      "dst": "MissingIndex"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "caused_by",
+      "dst": "QueryNotOptimized"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "caused_by",
+      "dst": "TableLock"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "diagnosed_by",
+      "dst": "RunExplainPlan"
+    },
+    {
+      "src": "MissingIndex",
+      "rel": "fixed_by",
+      "dst": "CreateIndex"
+    },
+    {
+      "src": "QueryNotOptimized",
+      "rel": "fixed_by",
+      "dst": "OptimizeQuery"
+    },
+    {
+      "src": "TableLock",
+      "rel": "fixed_by",
+      "dst": "OptimizeQuery"
+    },
+    {
+      "src": "TableLock",
+      "rel": "diagnosed_by",
+      "dst": "CheckLocks"
+    },
+    {
+      "src": "DatabaseConnectionError",
+      "rel": "caused_by",
+      "dst": "TooManyConnections"
+    },
+    {
+      "src": "DatabaseConnectionError",
+      "rel": "caused_by",
+      "dst": "InvalidCredentials"
+    },
+    {
+      "src": "DatabaseConnectionError",
+      "rel": "diagnosed_by",
+      "dst": "TestConnection"
+    },
+    {
+      "src": "DatabaseConnectionError",
+      "rel": "diagnosed_by",
+      "dst": "MonitorConnections"
+    },
+    {
+      "src": "TooManyConnections",
+      "rel": "fixed_by",
+      "dst": "IncreaseConnectionPool"
+    },
+    {
+      "src": "AuthenticationFailure",
+      "rel": "caused_by",
+      "dst": "InvalidCredentials"
+    },
+    {
+      "src": "AuthenticationFailure",
+      "rel": "caused_by",
+      "dst": "ExpiredCredentials"
+    },
+    {
+      "src": "AuthenticationFailure",
+      "rel": "diagnosed_by",
+      "dst": "TestAuthentication"
+    },
+    {
+      "src": "AuthenticationFailure",
+      "rel": "diagnosed_by",
+      "dst": "VerifyTokens"
+    },
+    {
+      "src": "InvalidCredentials",
+      "rel": "fixed_by",
+      "dst": "RotateCredentials"
+    },
+    {
+      "src": "ExpiredCredentials",
+      "rel": "fixed_by",
+      "dst": "RotateCredentials"
+    },
+    {
+      "src": "AuthorizationDenied",
+      "rel": "caused_by",
+      "dst": "IncorrectPermissions"
+    },
+    {
+      "src": "AuthorizationDenied",
+      "rel": "caused_by",
+      "dst": "RoleBindingMissing"
+    },
+    {
+      "src": "AuthorizationDenied",
+      "rel": "diagnosed_by",
+      "dst": "AuditPermissions"
+    },
+    {
+      "src": "IncorrectPermissions",
+      "rel": "fixed_by",
+      "dst": "UpdatePermissions"
+    },
+    {
+      "src": "RoleBindingMissing",
+      "rel": "fixed_by",
+      "dst": "CreateRoleBinding"
+    },
+    {
+      "src": "TokenExpired",
+      "rel": "caused_by",
+      "dst": "ExpiredCredentials"
+    },
+    {
+      "src": "TokenExpired",
+      "rel": "diagnosed_by",
+      "dst": "VerifyTokens"
+    },
+    {
+      "src": "TokenExpired",
+      "rel": "fixed_by",
+      "dst": "RotateCredentials"
+    },
+    {
+      "src": "RateLimitExceeded",
+      "rel": "caused_by",
+      "dst": "ResourceExhaustion"
+    },
+    {
+      "src": "RateLimitExceeded",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "RateLimitExceeded",
+      "rel": "fixed_by",
+      "dst": "ScaleHorizontally"
+    },
+    {
+      "src": "CORSError",
+      "rel": "caused_by",
+      "dst": "ConfigurationError"
+    },
+    {
+      "src": "CORSError",
+      "rel": "diagnosed_by",
+      "dst": "ValidateConfig"
+    },
+    {
+      "src": "CORSError",
+      "rel": "fixed_by",
+      "dst": "EnableCORS"
+    },
+    {
+      "src": "JSONParseError",
+      "rel": "caused_by",
+      "dst": "MessageSerialization"
+    },
+    {
+      "src": "JSONParseError",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "JSONParseError",
+      "rel": "fixed_by",
+      "dst": "ValidateJSON"
+    },
+    {
+      "src": "JSONParseError",
+      "rel": "fixed_by",
+      "dst": "FixSerialization"
+    },
+    {
+      "src": "NullPointerException",
+      "rel": "caused_by",
+      "dst": "UnhandledException"
+    },
+    {
+      "src": "NullPointerException",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeStackTrace"
+    },
+    {
+      "src": "NullPointerException",
+      "rel": "fixed_by",
+      "dst": "AddNullCheck"
+    },
+    {
+      "src": "StackOverflowError",
+      "rel": "caused_by",
+      "dst": "DeepRecursion"
+    },
+    {
+      "src": "StackOverflowError",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeStackTrace"
+    },
+    {
+      "src": "StackOverflowError",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "StackOverflowError",
+      "rel": "fixed_by",
+      "dst": "IncreasStackSize"
+    },
+    {
+      "src": "DeepRecursion",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "SegmentationFault",
+      "rel": "caused_by",
+      "dst": "UnhandledException"
+    },
+    {
+      "src": "SegmentationFault",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeStackTrace"
+    },
+    {
+      "src": "SegmentationFault",
+      "rel": "fixed_by",
+      "dst": "FixMemoryAccess"
+    },
+    {
+      "src": "FileNotFound",
+      "rel": "caused_by",
+      "dst": "ConfigurationError"
+    },
+    {
+      "src": "FileNotFound",
+      "rel": "caused_by",
+      "dst": "EnvironmentVariableMissing"
+    },
+    {
+      "src": "FileNotFound",
+      "rel": "diagnosed_by",
+      "dst": "CheckEnvVars"
+    },
+    {
+      "src": "EnvironmentVariableMissing",
+      "rel": "fixed_by",
+      "dst": "SetEnvironmentVariable"
+    },
+    {
+      "src": "EnvironmentVariableMissing",
+      "rel": "diagnosed_by",
+      "dst": "CheckEnvVars"
+    },
+    {
+      "src": "PermissionDenied",
+      "rel": "caused_by",
+      "dst": "IncorrectPermissions"
+    },
+    {
+      "src": "PermissionDenied",
+      "rel": "diagnosed_by",
+      "dst": "AuditPermissions"
+    },
+    {
+      "src": "PermissionDenied",
+      "rel": "fixed_by",
+      "dst": "UpdatePermissions"
+    },
+    {
+      "src": "ProcessCrash",
+      "rel": "caused_by",
+      "dst": "UnhandledException"
+    },
+    {
+      "src": "ProcessCrash",
+      "rel": "caused_by",
+      "dst": "OutOfMemoryError"
+    },
+    {
+      "src": "ProcessCrash",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "ProcessCrash",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeStackTrace"
+    },
+    {
+      "src": "ProcessCrash",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "caused_by",
+      "dst": "HealthCheckFailed"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "caused_by",
+      "dst": "ConfigurationError"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "diagnosed_by",
+      "dst": "DescribePod"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "diagnosed_by",
+      "dst": "GetEvents"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "diagnosed_by",
+      "dst": "InspectContainer"
+    },
+    {
+      "src": "HealthCheckFailed",
+      "rel": "fixed_by",
+      "dst": "FixConfiguration"
+    },
+    {
+      "src": "HealthCheckFailed",
+      "rel": "diagnosed_by",
+      "dst": "RunHealthCheck"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "caused_by",
+      "dst": "MemoryLeak"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "caused_by",
+      "dst": "ResourceQuotaExceeded"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "diagnosed_by",
+      "dst": "DescribePod"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "diagnosed_by",
+      "dst": "CheckResourceUsage"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "fixed_by",
+      "dst": "IncreaseMemory"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "fixed_by",
+      "dst": "IncreaseQuota"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "caused_by",
+      "dst": "ImagePullFailure"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "caused_by",
+      "dst": "ConfigMapMissing"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "caused_by",
+      "dst": "SecretNotFound"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "diagnosed_by",
+      "dst": "GetEvents"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "diagnosed_by",
+      "dst": "DescribePod"
+    },
+    {
+      "src": "ImagePullFailure",
+      "rel": "fixed_by",
+      "dst": "FixImageTag"
+    },
+    {
+      "src": "ImagePullFailure",
+      "rel": "diagnosed_by",
+      "dst": "GetEvents"
+    },
+    {
+      "src": "SecretNotFound",
+      "rel": "fixed_by",
+      "dst": "CreateSecret"
+    },
+    {
+      "src": "ConfigMapMissing",
+      "rel": "fixed_by",
+      "dst": "CreateConfigMap"
+    },
+    {
+      "src": "LoadBalancerError",
+      "rel": "caused_by",
+      "dst": "IngressMisconfiguration"
+    },
+    {
+      "src": "LoadBalancerError",
+      "rel": "caused_by",
+      "dst": "InsufficientReplicas"
+    },
+    {
+      "src": "LoadBalancerError",
+      "rel": "diagnosed_by",
+      "dst": "TestLoadBalancer"
+    },
+    {
+      "src": "LoadBalancerError",
+      "rel": "diagnosed_by",
+      "dst": "CheckIngress"
+    },
+    {
+      "src": "IngressMisconfiguration",
+      "rel": "fixed_by",
+      "dst": "FixIngress"
+    },
+    {
+      "src": "IngressMisconfiguration",
+      "rel": "diagnosed_by",
+      "dst": "CheckIngress"
+    },
+    {
+      "src": "CacheInvalidation",
+      "rel": "caused_by",
+      "dst": "TTLTooLong"
+    },
+    {
+      "src": "CacheInvalidation",
+      "rel": "caused_by",
+      "dst": "CachePoisoning"
+    },
+    {
+      "src": "CacheInvalidation",
+      "rel": "diagnosed_by",
+      "dst": "CheckCacheStats"
+    },
+    {
+      "src": "CacheInvalidation",
+      "rel": "fixed_by",
+      "dst": "ClearCache"
+    },
+    {
+      "src": "StaleData",
+      "rel": "caused_by",
+      "dst": "TTLTooLong"
+    },
+    {
+      "src": "StaleData",
+      "rel": "caused_by",
+      "dst": "ReplicationLag"
+    },
+    {
+      "src": "StaleData",
+      "rel": "diagnosed_by",
+      "dst": "CheckCacheStats"
+    },
+    {
+      "src": "StaleData",
+      "rel": "fixed_by",
+      "dst": "AdjustTTL"
+    },
+    {
+      "src": "TTLTooLong",
+      "rel": "fixed_by",
+      "dst": "AdjustTTL"
+    },
+    {
+      "src": "TTLTooShort",
+      "rel": "fixed_by",
+      "dst": "AdjustTTL"
+    },
+    {
+      "src": "CachePoisoning",
+      "rel": "fixed_by",
+      "dst": "ClearCache"
+    },
+    {
+      "src": "DataInconsistency",
+      "rel": "caused_by",
+      "dst": "ReplicationLag"
+    },
+    {
+      "src": "DataInconsistency",
+      "rel": "caused_by",
+      "dst": "DataCorruption"
+    },
+    {
+      "src": "DataInconsistency",
+      "rel": "diagnosed_by",
+      "dst": "MonitorReplication"
+    },
+    {
+      "src": "DataInconsistency",
+      "rel": "fixed_by",
+      "dst": "RepairData"
+    },
+    {
+      "src": "ReplicationLag",
+      "rel": "diagnosed_by",
+      "dst": "MonitorReplication"
+    },
+    {
+      "src": "ReplicationLag",
+      "rel": "fixed_by",
+      "dst": "ScaleHorizontally"
+    },
+    {
+      "src": "DataCorruption",
+      "rel": "fixed_by",
+      "dst": "RepairData"
+    },
+    {
+      "src": "MessageQueueBacklog",
+      "rel": "caused_by",
+      "dst": "ConsumerLag"
+    },
+    {
+      "src": "MessageQueueBacklog",
+      "rel": "caused_by",
+      "dst": "ProducerOverload"
+    },
+    {
+      "src": "MessageQueueBacklog",
+      "rel": "diagnosed_by",
+      "dst": "InspectQueue"
+    },
+    {
+      "src": "MessageQueueBacklog",
+      "rel": "diagnosed_by",
+      "dst": "CheckConsumerGroups"
+    },
+    {
+      "src": "ConsumerLag",
+      "rel": "fixed_by",
+      "dst": "AddConsumers"
+    },
+    {
+      "src": "ConsumerLag",
+      "rel": "diagnosed_by",
+      "dst": "CheckConsumerGroups"
+    },
+    {
+      "src": "ProducerOverload",
+      "rel": "fixed_by",
+      "dst": "ThrottleProducers"
+    },
+    {
+      "src": "DeadLetterQueue",
+      "rel": "caused_by",
+      "dst": "MessageSerialization"
+    },
+    {
+      "src": "DeadLetterQueue",
+      "rel": "caused_by",
+      "dst": "UnhandledException"
+    },
+    {
+      "src": "DeadLetterQueue",
+      "rel": "diagnosed_by",
+      "dst": "InspectQueue"
+    },
+    {
+      "src": "DeadLetterQueue",
+      "rel": "fixed_by",
+      "dst": "FixSerialization"
+    },
+    {
+      "src": "MessageSerialization",
+      "rel": "fixed_by",
+      "dst": "FixSerialization"
+    },
+    {
+      "src": "SplitBrain",
+      "rel": "caused_by",
+      "dst": "NetworkPartition"
+    },
+    {
+      "src": "SplitBrain",
+      "rel": "caused_by",
+      "dst": "BrokerFailure"
+    },
+    {
+      "src": "SplitBrain",
+      "rel": "diagnosed_by",
+      "dst": "MonitorBrokers"
+    },
+    {
+      "src": "SplitBrain",
+      "rel": "fixed_by",
+      "dst": "FailoverBroker"
+    },
+    {
+      "src": "BrokerFailure",
+      "rel": "fixed_by",
+      "dst": "FailoverBroker"
+    },
+    {
+      "src": "BrokerFailure",
+      "rel": "diagnosed_by",
+      "dst": "MonitorBrokers"
+    },
+    {
+      "src": "PartitionLeaderFailure",
+      "rel": "fixed_by",
+      "dst": "RebalancePartitions"
+    },
+    {
+      "src": "PartitionLeaderFailure",
+      "rel": "diagnosed_by",
+      "dst": "MonitorBrokers"
+    },
+    {
+      "src": "ThreadDeadlock",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "ThreadDeadlock",
+      "rel": "diagnosed_by",
+      "dst": "CheckThreadDump"
+    },
+    {
+      "src": "MissingDependency",
+      "rel": "fixed_by",
+      "dst": "UpdateDependency"
+    },
+    {
+      "src": "MissingDependency",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "VersionMismatch",
+      "rel": "fixed_by",
+      "dst": "UpdateDependency"
+    },
+    {
+      "src": "VersionMismatch",
+      "rel": "fixed_by",
+      "dst": "RollbackVersion"
+    },
+    {
+      "src": "VersionMismatch",
+      "rel": "diagnosed_by",
+      "dst": "ValidateConfig"
+    },
+    {
+      "src": "SidecarCrash",
+      "rel": "fixed_by",
+      "dst": "RestartSidecar"
+    },
+    {
+      "src": "SidecarCrash",
+      "rel": "diagnosed_by",
+      "dst": "DescribePod"
+    },
+    {
+      "src": "SchemaChange",
+      "rel": "fixed_by",
+      "dst": "ApplySchemaMigration"
+    },
+    {
+      "src": "TransactionDeadlock",
+      "rel": "fixed_by",
+      "dst": "OptimizeQuery"
+    },
+    {
+      "src": "TransactionDeadlock",
+      "rel": "diagnosed_by",
+      "dst": "CheckLocks"
+    },
+    {
+      "src": "PersistentVolumeError",
+      "rel": "fixed_by",
+      "dst": "ProvisionVolume"
+    },
+    {
+      "src": "PersistentVolumeError",
+      "rel": "diagnosed_by",
+      "dst": "CheckPVCStatus"
+    },
+    {
+      "src": "PersistentVolumeError",
+      "rel": "diagnosed_by",
+      "dst": "InspectVolumes"
+    },
+    {
+      "src": "NodeNotReady",
+      "rel": "fixed_by",
+      "dst": "DrainNode"
+    },
+    {
+      "src": "NodeNotReady",
+      "rel": "diagnosed_by",
+      "dst": "GetEvents"
+    },
+    {
+      "src": "SchedulingFailure",
+      "rel": "caused_by",
+      "dst": "NodeNotReady"
+    },
+    {
+      "src": "SchedulingFailure",
+      "rel": "caused_by",
+      "dst": "ResourceQuotaExceeded"
+    },
+    {
+      "src": "SchedulingFailure",
+      "rel": "diagnosed_by",
+      "dst": "DescribePod"
+    },
+    {
+      "src": "SchedulingFailure",
+      "rel": "diagnosed_by",
+      "dst": "CheckQuotas"
+    },
+    {
+      "src": "CheckSSLHandshake",
+      "rel": "uses_tool",
+      "dst": "SSLTool"
+    },
+    {
+      "src": "VerifyCertificate",
+      "rel": "uses_tool",
+      "dst": "SSLTool"
+    },
+    {
+      "src": "CheckTimeSync",
+      "rel": "uses_tool",
+      "dst": "NetcatTool"
+    },
+    {
+      "src": "RunTraceroute",
+      "rel": "uses_tool",
+      "dst": "NetcatTool"
+    },
+    {
+      "src": "CheckNetworkLogs",
+      "rel": "uses_tool",
+      "dst": "TcpdumpTool"
+    },
+    {
+      "src": "CheckNetworkLogs",
+      "rel": "uses_tool",
+      "dst": "WiresharkTool"
+    },
+    {
+      "src": "CheckFirewallRules",
+      "rel": "uses_tool",
+      "dst": "NetstatTool"
+    },
+    {
+      "src": "CheckDNS",
+      "rel": "uses_tool",
+      "dst": "DigTool"
+    },
+    {
+      "src": "CheckDNS",
+      "rel": "uses_tool",
+      "dst": "NsLookupTool"
+    },
+    {
+      "src": "VerifyDNSRecords",
+      "rel": "uses_tool",
+      "dst": "DigTool"
+    },
+    {
+      "src": "ProfileCPU",
+      "rel": "uses_tool",
+      "dst": "TopTool"
+    },
+    {
+      "src": "ProfileCPU",
+      "rel": "uses_tool",
+      "dst": "HtopTool"
+    },
+    {
+      "src": "AnalyzeHeapDump",
+      "rel": "uses_tool",
+      "dst": "JVisualVM"
+    },
+    {
+      "src": "CheckResourceUsage",
+      "rel": "uses_tool",
+      "dst": "TopTool"
+    },
+    {
+      "src": "CheckResourceUsage",
+      "rel": "uses_tool",
+      "dst": "VmstatTool"
+    },
+    {
+      "src": "CheckDiskUsage",
+      "rel": "uses_tool",
+      "dst": "DfTool"
+    },
+    {
+      "src": "CheckDiskUsage",
+      "rel": "uses_tool",
+      "dst": "DuTool"
+    },
+    {
+      "src": "DescribePod",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "GetEvents",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "CheckQuotas",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "InspectContainer",
+      "rel": "uses_tool",
+      "dst": "DockerTool"
+    },
+    {
+      "src": "CheckMetrics",
+      "rel": "uses_tool",
+      "dst": "PrometheusTool"
+    },
+    {
+      "src": "CheckMetrics",
+      "rel": "uses_tool",
+      "dst": "GrafanaTool"
+    },
+    {
+      "src": "TraceRequests",
+      "rel": "uses_tool",
+      "dst": "JaegerTool"
+    },
+    {
+      "src": "TraceRequests",
+      "rel": "uses_tool",
+      "dst": "ZipkinTool"
+    },
+    {
+      "src": "TestConnection",
+      "rel": "uses_tool",
+      "dst": "PgAdminTool"
+    },
+    {
+      "src": "RunExplainPlan",
+      "rel": "uses_tool",
+      "dst": "PgAdminTool"
+    },
+    {
+      "src": "RunExplainPlan",
+      "rel": "uses_tool",
+      "dst": "MySQLWorkbench"
+    },
+    {
+      "src": "CheckLocks",
+      "rel": "uses_tool",
+      "dst": "PgAdminTool"
+    },
+    {
+      "src": "CheckCacheStats",
+      "rel": "uses_tool",
+      "dst": "RedisCliTool"
+    },
+    {
+      "src": "InspectQueue",
+      "rel": "uses_tool",
+      "dst": "KafkaConsoleTool"
+    },
+    {
+      "src": "InspectQueue",
+      "rel": "uses_tool",
+      "dst": "RabbitMQAdmin"
+    },
+    {
+      "src": "CheckConsumerGroups",
+      "rel": "uses_tool",
+      "dst": "KafkaConsoleTool"
+    },
+    {
+      "src": "MonitorBrokers",
+      "rel": "uses_tool",
+      "dst": "KafkaConsoleTool"
+    },
+    {
+      "src": "AnalyzeStackTrace",
+      "rel": "uses_tool",
+      "dst": "GDBTool"
+    },
+    {
+      "src": "CheckThreadDump",
+      "rel": "uses_tool",
+      "dst": "JVisualVM"
+    },
+    {
+      "src": "MonitorConnections",
+      "rel": "uses_tool",
+      "dst": "LsofTool"
+    },
+    {
+      "src": "MonitorConnections",
+      "rel": "uses_tool",
+      "dst": "SsTool"
+    },
+    {
+      "src": "AnalyzeLogs",
+      "rel": "uses_tool",
+      "dst": "GrafanaTool"
+    },
+    {
+      "src": "ProbeEndpoint",
+      "rel": "uses_tool",
+      "dst": "CurlTool"
+    },
+    {
+      "src": "RunHealthCheck",
+      "rel": "uses_tool",
+      "dst": "CurlTool"
+    },
+    {
+      "src": "TestLoadBalancer",
+      "rel": "uses_tool",
+      "dst": "CurlTool"
+    },
+    {
+      "src": "CheckIngress",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "CheckPVCStatus",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "InspectVolumes",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "CheckServiceMesh",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "ValidateConfig",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "CheckEnvVars",
+      "rel": "uses_tool",
+      "dst": "PsTool"
+    },
+    {
+      "src": "TestAuthentication",
+      "rel": "uses_tool",
+      "dst": "CurlTool"
+    },
+    {
+      "src": "VerifyTokens",
+      "rel": "uses_tool",
+      "dst": "CurlTool"
+    },
+    {
+      "src": "AuditPermissions",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "MonitorReplication",
+      "rel": "uses_tool",
+      "dst": "PgAdminTool"
+    },
+    {
+      "src": "TLSHandshakeError",
+      "rel": "leads_to",
+      "dst": "ConnectionTimeout"
+    },
+    {
+      "src": "SSLCertificateError",
+      "rel": "leads_to",
+      "dst": "TLSHandshakeError"
+    },
+    {
+      "src": "DNSResolutionFailure",
+      "rel": "leads_to",
+      "dst": "ConnectionTimeout"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "leads_to",
+      "dst": "GatewayTimeout"
+    },
+    {
+      "src": "PacketLoss",
+      "rel": "leads_to",
+      "dst": "HighLatency"
+    },
+    {
+      "src": "NetworkPartition",
+      "rel": "leads_to",
+      "dst": "PacketLoss"
+    },
+    {
+      "src": "FirewallBlocking",
+      "rel": "leads_to",
+      "dst": "ConnectionRefused"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "leads_to",
+      "dst": "ProcessCrash"
+    },
+    {
+      "src": "MemoryLeak",
+      "rel": "leads_to",
+      "dst": "OutOfMemoryError"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "leads_to",
+      "dst": "HighLatency"
+    },
+    {
+      "src": "InfiniteLoop",
+      "rel": "leads_to",
+      "dst": "HighCPUUsage"
+    },
+    {
+      "src": "DiskSpaceFull",
+      "rel": "leads_to",
+      "dst": "ProcessCrash"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "leads_to",
+      "dst": "HighLatency"
+    },
+    {
+      "src": "TableLock",
+      "rel": "leads_to",
+      "dst": "SlowQueryPerformance"
+    },
+    {
+      "src": "MissingIndex",
+      "rel": "leads_to",
+      "dst": "SlowQueryPerformance"
+    },
+    {
+      "src": "DatabaseConnectionError",
+      "rel": "leads_to",
+      "dst": "InternalServerError"
+    },
+    {
+      "src": "AuthenticationFailure",
+      "rel": "leads_to",
+      "dst": "ServiceUnavailable"
+    },
+    {
+      "src": "TokenExpired",
+      "rel": "leads_to",
+      "dst": "AuthenticationFailure"
+    },
+    {
+      "src": "ResourceExhaustion",
+      "rel": "leads_to",
+      "dst": "RateLimitExceeded"
+    },
+    {
+      "src": "ConfigurationError",
+      "rel": "leads_to",
+      "dst": "InternalServerError"
+    },
+    {
+      "src": "HealthCheckFailed",
+      "rel": "leads_to",
+      "dst": "ContainerRestartLoop"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "leads_to",
+      "dst": "ContainerRestartLoop"
+    },
+    {
+      "src": "ImagePullFailure",
+      "rel": "leads_to",
+      "dst": "DeploymentFailed"
+    },
+    {
+      "src": "SecretNotFound",
+      "rel": "leads_to",
+      "dst": "DeploymentFailed"
+    },
+    {
+      "src": "ConfigMapMissing",
+      "rel": "leads_to",
+      "dst": "DeploymentFailed"
+    },
+    {
+      "src": "IngressMisconfiguration",
+      "rel": "leads_to",
+      "dst": "LoadBalancerError"
+    },
+    {
+      "src": "CachePoisoning",
+      "rel": "leads_to",
+      "dst": "StaleData"
+    },
+    {
+      "src": "TTLTooLong",
+      "rel": "leads_to",
+      "dst": "StaleData"
+    },
+    {
+      "src": "ReplicationLag",
+      "rel": "leads_to",
+      "dst": "DataInconsistency"
+    },
+    {
+      "src": "ConsumerLag",
+      "rel": "leads_to",
+      "dst": "MessageQueueBacklog"
+    },
+    {
+      "src": "ProducerOverload",
+      "rel": "leads_to",
+      "dst": "MessageQueueBacklog"
+    },
+    {
+      "src": "MessageSerialization",
+      "rel": "leads_to",
+      "dst": "DeadLetterQueue"
+    },
+    {
+      "src": "BrokerFailure",
+      "rel": "leads_to",
+      "dst": "SplitBrain"
+    },
+    {
+      "src": "NetworkPartition",
+      "rel": "leads_to",
+      "dst": "SplitBrain"
+    },
+    {
+      "src": "ThreadDeadlock",
+      "rel": "leads_to",
+      "dst": "HighCPUUsage"
+    },
+    {
+      "src": "NodeNotReady",
+      "rel": "leads_to",
+      "dst": "SchedulingFailure"
+    },
+    {
+      "src": "PersistentVolumeError",
+      "rel": "leads_to",
+      "dst": "DeploymentFailed"
+    },
+    {
+      "src": "ServiceMeshError",
+      "rel": "leads_to",
+      "dst": "BadGateway"
+    },
+    {
+      "src": "SidecarCrash",
+      "rel": "leads_to",
+      "dst": "ServiceMeshError"
+    },
+    {
+      "src": "VersionMismatch",
+      "rel": "leads_to",
+      "dst": "InternalServerError"
+    },
+    {
+      "src": "MissingDependency",
+      "rel": "leads_to",
+      "dst": "ProcessCrash"
+    },
+    {
+      "src": "UnhandledException",
+      "rel": "leads_to",
+      "dst": "ProcessCrash"
+    },
+    {
+      "src": "DeepRecursion",
+      "rel": "leads_to",
+      "dst": "StackOverflowError"
+    },
+    {
+      "src": "ConnectionPoolExhausted",
+      "rel": "leads_to",
+      "dst": "GatewayTimeout"
+    },
+    {
+      "src": "TransactionDeadlock",
+      "rel": "leads_to",
+      "dst": "SlowQueryPerformance"
+    },
+    {
+      "src": "SchemaChange",
+      "rel": "leads_to",
+      "dst": "DataInconsistency"
+    },
+    {
+      "src": "TLSHandshakeError",
+      "rel": "related_to",
+      "dst": "SSLCertificateError"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "related_to",
+      "dst": "GatewayTimeout"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "related_to",
+      "dst": "PodOOMKilled"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "related_to",
+      "dst": "HighLatency"
+    },
+    {
+      "src": "InternalServerError",
+      "rel": "related_to",
+      "dst": "BadGateway"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "related_to",
+      "dst": "GatewayTimeout"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "related_to",
+      "dst": "DeploymentFailed"
+    },
+    {
+      "src": "CacheInvalidation",
+      "rel": "related_to",
+      "dst": "StaleData"
+    },
+    {
+      "src": "MessageQueueBacklog",
+      "rel": "related_to",
+      "dst": "DeadLetterQueue"
+    },
+    {
+      "src": "AuthenticationFailure",
+      "rel": "related_to",
+      "dst": "AuthorizationDenied"
+    },
+    {
+      "src": "PermissionDenied",
+      "rel": "related_to",
+      "dst": "AuthorizationDenied"
+    },
+    {
+      "src": "DatabaseConnectionError",
+      "rel": "related_to",
+      "dst": "SlowQueryPerformance"
+    },
+    {
+      "src": "DataInconsistency",
+      "rel": "related_to",
+      "dst": "DataCorruption"
+    },
+    {
+      "src": "NullPointerException",
+      "rel": "related_to",
+      "dst": "SegmentationFault"
+    },
+    {
+      "src": "ProcessCrash",
+      "rel": "related_to",
+      "dst": "ContainerRestartLoop"
+    },
+    {
+      "src": "FileNotFound",
+      "rel": "related_to",
+      "dst": "PermissionDenied"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "caused_by",
+      "dst": "ThreadDeadlock"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "caused_by",
+      "dst": "ConnectionPoolExhausted"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "caused_by",
+      "dst": "NodeNotReady"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "caused_by",
+      "dst": "SchedulingFailure"
+    },
+    {
+      "src": "GatewayTimeout",
+      "rel": "caused_by",
+      "dst": "ProxyMisconfiguration"
+    },
+    {
+      "src": "GatewayTimeout",
+      "rel": "caused_by",
+      "dst": "ServiceMeshError"
+    },
+    {
+      "src": "InternalServerError",
+      "rel": "caused_by",
+      "dst": "MemoryLeak"
+    },
+    {
+      "src": "InternalServerError",
+      "rel": "caused_by",
+      "dst": "MissingDependency"
+    },
+    {
+      "src": "BadGateway",
+      "rel": "caused_by",
+      "dst": "IngressMisconfiguration"
+    },
+    {
+      "src": "BadGateway",
+      "rel": "caused_by",
+      "dst": "SidecarCrash"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "caused_by",
+      "dst": "InfiniteLoop"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "caused_by",
+      "dst": "QueryNotOptimized"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "caused_by",
+      "dst": "ThreadDeadlock"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "caused_by",
+      "dst": "TransactionDeadlock"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "caused_by",
+      "dst": "TooManyConnections"
+    },
+    {
+      "src": "DatabaseConnectionError",
+      "rel": "caused_by",
+      "dst": "FirewallBlocking"
+    },
+    {
+      "src": "DatabaseConnectionError",
+      "rel": "caused_by",
+      "dst": "ConfigurationError"
+    },
+    {
+      "src": "AuthenticationFailure",
+      "rel": "caused_by",
+      "dst": "ClockSkew"
+    },
+    {
+      "src": "AuthenticationFailure",
+      "rel": "caused_by",
+      "dst": "ConfigurationError"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "caused_by",
+      "dst": "MissingDependency"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "caused_by",
+      "dst": "SecretNotFound"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "caused_by",
+      "dst": "ResourceQuotaExceeded"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "caused_by",
+      "dst": "PersistentVolumeError"
+    },
+    {
+      "src": "LoadBalancerError",
+      "rel": "caused_by",
+      "dst": "NodeNotReady"
+    },
+    {
+      "src": "LoadBalancerError",
+      "rel": "caused_by",
+      "dst": "ServiceMeshError"
+    },
+    {
+      "src": "CacheInvalidation",
+      "rel": "caused_by",
+      "dst": "ConfigurationError"
+    },
+    {
+      "src": "StaleData",
+      "rel": "caused_by",
+      "dst": "ConsumerLag"
+    },
+    {
+      "src": "StaleData",
+      "rel": "caused_by",
+      "dst": "BrokerFailure"
+    },
+    {
+      "src": "DataInconsistency",
+      "rel": "caused_by",
+      "dst": "TransactionDeadlock"
+    },
+    {
+      "src": "DataInconsistency",
+      "rel": "caused_by",
+      "dst": "SplitBrain"
+    },
+    {
+      "src": "MessageQueueBacklog",
+      "rel": "caused_by",
+      "dst": "BrokerFailure"
+    },
+    {
+      "src": "MessageQueueBacklog",
+      "rel": "caused_by",
+      "dst": "ResourceExhaustion"
+    },
+    {
+      "src": "DeadLetterQueue",
+      "rel": "caused_by",
+      "dst": "ConfigurationError"
+    },
+    {
+      "src": "DeadLetterQueue",
+      "rel": "caused_by",
+      "dst": "ConsumerLag"
+    },
+    {
+      "src": "SplitBrain",
+      "rel": "caused_by",
+      "dst": "ClockSkew"
+    },
+    {
+      "src": "ProcessCrash",
+      "rel": "caused_by",
+      "dst": "SegmentationFault"
+    },
+    {
+      "src": "ProcessCrash",
+      "rel": "caused_by",
+      "dst": "StackOverflowError"
+    },
+    {
+      "src": "HealthCheckFailed",
+      "rel": "caused_by",
+      "dst": "DatabaseConnectionError"
+    },
+    {
+      "src": "HealthCheckFailed",
+      "rel": "caused_by",
+      "dst": "MemoryLeak"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "caused_by",
+      "dst": "InfiniteLoop"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "caused_by",
+      "dst": "ThreadDeadlock"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "caused_by",
+      "dst": "DNSMisconfiguration"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "caused_by",
+      "dst": "ProxyMisconfiguration"
+    },
+    {
+      "src": "ConnectionRefused",
+      "rel": "caused_by",
+      "dst": "ServiceMeshError"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "fixed_by",
+      "dst": "IncreaseConnectionPool"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "fixed_by",
+      "dst": "OptimizeQuery"
+    },
+    {
+      "src": "NetworkPartition",
+      "rel": "fixed_by",
+      "dst": "FailoverBroker"
+    },
+    {
+      "src": "MemoryLeak",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "MemoryLeak",
+      "rel": "fixed_by",
+      "dst": "IncreaseMemory"
+    },
+    {
+      "src": "InfiniteLoop",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "ThreadDeadlock",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "ConfigurationError",
+      "rel": "fixed_by",
+      "dst": "SetEnvironmentVariable"
+    },
+    {
+      "src": "MissingDependency",
+      "rel": "fixed_by",
+      "dst": "FixConfiguration"
+    },
+    {
+      "src": "VersionMismatch",
+      "rel": "fixed_by",
+      "dst": "FixConfiguration"
+    },
+    {
+      "src": "ConnectionPoolExhausted",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "SidecarCrash",
+      "rel": "fixed_by",
+      "dst": "FixConfiguration"
+    },
+    {
+      "src": "NodeNotReady",
+      "rel": "fixed_by",
+      "dst": "CordonNode"
+    },
+    {
+      "src": "SchedulingFailure",
+      "rel": "fixed_by",
+      "dst": "DrainNode"
+    },
+    {
+      "src": "SchedulingFailure",
+      "rel": "fixed_by",
+      "dst": "AddReplicas"
+    },
+    {
+      "src": "ProxyMisconfiguration",
+      "rel": "fixed_by",
+      "dst": "FixConfiguration"
+    },
+    {
+      "src": "DataCorruption",
+      "rel": "fixed_by",
+      "dst": "RollbackVersion"
+    },
+    {
+      "src": "CachePoisoning",
+      "rel": "fixed_by",
+      "dst": "ValidateJSON"
+    },
+    {
+      "src": "TTLTooLong",
+      "rel": "fixed_by",
+      "dst": "ClearCache"
+    },
+    {
+      "src": "TTLTooShort",
+      "rel": "fixed_by",
+      "dst": "ClearCache"
+    },
+    {
+      "src": "ConsumerLag",
+      "rel": "fixed_by",
+      "dst": "ScaleHorizontally"
+    },
+    {
+      "src": "ProducerOverload",
+      "rel": "fixed_by",
+      "dst": "ScaleHorizontally"
+    },
+    {
+      "src": "MessageSerialization",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "PartitionLeaderFailure",
+      "rel": "fixed_by",
+      "dst": "FailoverBroker"
+    },
+    {
+      "src": "TransactionDeadlock",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "TableLock",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "ResourceExhaustion",
+      "rel": "fixed_by",
+      "dst": "CleanupDiskSpace"
+    },
+    {
+      "src": "ResourceExhaustion",
+      "rel": "fixed_by",
+      "dst": "IncreaseMemory"
+    },
+    {
+      "src": "UnhandledException",
+      "rel": "fixed_by",
+      "dst": "AddNullCheck"
+    },
+    {
+      "src": "DeepRecursion",
+      "rel": "fixed_by",
+      "dst": "IncreasStackSize"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "diagnosed_by",
+      "dst": "CheckThreadDump"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "diagnosed_by",
+      "dst": "MonitorConnections"
+    },
+    {
+      "src": "GatewayTimeout",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "InternalServerError",
+      "rel": "diagnosed_by",
+      "dst": "CheckThreadDump"
+    },
+    {
+      "src": "BadGateway",
+      "rel": "diagnosed_by",
+      "dst": "CheckIngress"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "diagnosed_by",
+      "dst": "CheckLocks"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "diagnosed_by",
+      "dst": "MonitorConnections"
+    },
+    {
+      "src": "DatabaseConnectionError",
+      "rel": "diagnosed_by",
+      "dst": "CheckFirewallRules"
+    },
+    {
+      "src": "AuthenticationFailure",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "AuthorizationDenied",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "TokenExpired",
+      "rel": "diagnosed_by",
+      "dst": "CheckTimeSync"
+    },
+    {
+      "src": "RateLimitExceeded",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "diagnosed_by",
+      "dst": "CheckResourceUsage"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "diagnosed_by",
+      "dst": "CheckQuotas"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "diagnosed_by",
+      "dst": "ValidateConfig"
+    },
+    {
+      "src": "LoadBalancerError",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "CacheInvalidation",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "StaleData",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "DataInconsistency",
+      "rel": "diagnosed_by",
+      "dst": "CheckLocks"
+    },
+    {
+      "src": "MessageQueueBacklog",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "DeadLetterQueue",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "SplitBrain",
+      "rel": "diagnosed_by",
+      "dst": "CheckTimeSync"
+    },
+    {
+      "src": "ProcessCrash",
+      "rel": "diagnosed_by",
+      "dst": "InspectContainer"
+    },
+    {
+      "src": "ProcessCrash",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "HealthCheckFailed",
+      "rel": "diagnosed_by",
+      "dst": "ProbeEndpoint"
+    },
+    {
+      "src": "HealthCheckFailed",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeHeapDump"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "diagnosed_by",
+      "dst": "TestConnection"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "ConnectionRefused",
+      "rel": "diagnosed_by",
+      "dst": "TestConnection"
+    },
+    {
+      "src": "DNSResolutionFailure",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "PacketLoss",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "diagnosed_by",
+      "dst": "DescribePod"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "diagnosed_by",
+      "dst": "GetEvents"
+    },
+    {
+      "src": "TraceRequests",
+      "rel": "uses_tool",
+      "dst": "CurlTool"
+    },
+    {
+      "src": "CheckTimeSync",
+      "rel": "uses_tool",
+      "dst": "CurlTool"
+    },
+    {
+      "src": "VerifyDNSRecords",
+      "rel": "uses_tool",
+      "dst": "NsLookupTool"
+    },
+    {
+      "src": "CheckFirewallRules",
+      "rel": "uses_tool",
+      "dst": "SsTool"
+    },
+    {
+      "src": "CheckFirewallRules",
+      "rel": "uses_tool",
+      "dst": "LsofTool"
+    },
+    {
+      "src": "ProfileCPU",
+      "rel": "uses_tool",
+      "dst": "JVisualVM"
+    },
+    {
+      "src": "AnalyzeStackTrace",
+      "rel": "uses_tool",
+      "dst": "JVisualVM"
+    },
+    {
+      "src": "CheckResourceUsage",
+      "rel": "uses_tool",
+      "dst": "IostatTool"
+    },
+    {
+      "src": "MonitorConnections",
+      "rel": "uses_tool",
+      "dst": "NetstatTool"
+    },
+    {
+      "src": "InspectContainer",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "CheckPVCStatus",
+      "rel": "uses_tool",
+      "dst": "DockerTool"
+    },
+    {
+      "src": "AnalyzeLogs",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "MonitorReplication",
+      "rel": "uses_tool",
+      "dst": "MySQLWorkbench"
+    },
+    {
+      "src": "CheckCacheStats",
+      "rel": "uses_tool",
+      "dst": "CurlTool"
+    },
+    {
+      "src": "MonitorBrokers",
+      "rel": "uses_tool",
+      "dst": "GrafanaTool"
+    },
+    {
+      "src": "CheckConsumerGroups",
+      "rel": "uses_tool",
+      "dst": "GrafanaTool"
+    },
+    {
+      "src": "InspectQueue",
+      "rel": "uses_tool",
+      "dst": "GrafanaTool"
+    },
+    {
+      "src": "TestLoadBalancer",
+      "rel": "uses_tool",
+      "dst": "NetcatTool"
+    },
+    {
+      "src": "ProbeEndpoint",
+      "rel": "uses_tool",
+      "dst": "NetcatTool"
+    },
+    {
+      "src": "TestAuthentication",
+      "rel": "uses_tool",
+      "dst": "SSLTool"
+    },
+    {
+      "src": "CheckThreadDump",
+      "rel": "uses_tool",
+      "dst": "PsTool"
+    },
+    {
+      "src": "CheckLocks",
+      "rel": "uses_tool",
+      "dst": "MySQLWorkbench"
+    },
+    {
+      "src": "ClockSkew",
+      "rel": "leads_to",
+      "dst": "TLSHandshakeError"
+    },
+    {
+      "src": "CertificateExpired",
+      "rel": "leads_to",
+      "dst": "SSLCertificateError"
+    },
+    {
+      "src": "CertificateMismatch",
+      "rel": "leads_to",
+      "dst": "SSLCertificateError"
+    },
+    {
+      "src": "FirewallBlocking",
+      "rel": "leads_to",
+      "dst": "ConnectionTimeout"
+    },
+    {
+      "src": "DNSMisconfiguration",
+      "rel": "leads_to",
+      "dst": "DNSResolutionFailure"
+    },
+    {
+      "src": "IncorrectHostname",
+      "rel": "leads_to",
+      "dst": "DNSResolutionFailure"
+    },
+    {
+      "src": "ProxyMisconfiguration",
+      "rel": "leads_to",
+      "dst": "BadGateway"
+    },
+    {
+      "src": "MemoryLeak",
+      "rel": "leads_to",
+      "dst": "PodOOMKilled"
+    },
+    {
+      "src": "InfiniteLoop",
+      "rel": "leads_to",
+      "dst": "OutOfMemoryError"
+    },
+    {
+      "src": "ResourceExhaustion",
+      "rel": "leads_to",
+      "dst": "ServiceUnavailable"
+    },
+    {
+      "src": "ConnectionPoolExhausted",
+      "rel": "leads_to",
+      "dst": "DatabaseConnectionError"
+    },
+    {
+      "src": "InvalidCredentials",
+      "rel": "leads_to",
+      "dst": "AuthenticationFailure"
+    },
+    {
+      "src": "ExpiredCredentials",
+      "rel": "leads_to",
+      "dst": "TokenExpired"
+    },
+    {
+      "src": "IncorrectPermissions",
+      "rel": "leads_to",
+      "dst": "AuthorizationDenied"
+    },
+    {
+      "src": "RoleBindingMissing",
+      "rel": "leads_to",
+      "dst": "AuthorizationDenied"
+    },
+    {
+      "src": "ResourceQuotaExceeded",
+      "rel": "leads_to",
+      "dst": "SchedulingFailure"
+    },
+    {
+      "src": "IngressMisconfiguration",
+      "rel": "leads_to",
+      "dst": "BadGateway"
+    },
+    {
+      "src": "SidecarCrash",
+      "rel": "leads_to",
+      "dst": "BadGateway"
+    },
+    {
+      "src": "MissingIndex",
+      "rel": "leads_to",
+      "dst": "HighCPUUsage"
+    },
+    {
+      "src": "QueryNotOptimized",
+      "rel": "leads_to",
+      "dst": "HighCPUUsage"
+    },
+    {
+      "src": "TooManyConnections",
+      "rel": "leads_to",
+      "dst": "GatewayTimeout"
+    },
+    {
+      "src": "TableLock",
+      "rel": "leads_to",
+      "dst": "DatabaseConnectionError"
+    },
+    {
+      "src": "TransactionDeadlock",
+      "rel": "leads_to",
+      "dst": "DatabaseConnectionError"
+    },
+    {
+      "src": "CachePoisoning",
+      "rel": "leads_to",
+      "dst": "DataInconsistency"
+    },
+    {
+      "src": "TTLTooLong",
+      "rel": "leads_to",
+      "dst": "CacheInvalidation"
+    },
+    {
+      "src": "BrokerFailure",
+      "rel": "leads_to",
+      "dst": "MessageQueueBacklog"
+    },
+    {
+      "src": "PartitionLeaderFailure",
+      "rel": "leads_to",
+      "dst": "ConsumerLag"
+    },
+    {
+      "src": "DeepRecursion",
+      "rel": "leads_to",
+      "dst": "ProcessCrash"
+    },
+    {
+      "src": "UnhandledException",
+      "rel": "leads_to",
+      "dst": "InternalServerError"
+    },
+    {
+      "src": "ConfigurationError",
+      "rel": "leads_to",
+      "dst": "ContainerRestartLoop"
+    },
+    {
+      "src": "SecretNotFound",
+      "rel": "leads_to",
+      "dst": "ContainerRestartLoop"
+    },
+    {
+      "src": "ConfigMapMissing",
+      "rel": "leads_to",
+      "dst": "ContainerRestartLoop"
+    },
+    {
+      "src": "PersistentVolumeError",
+      "rel": "leads_to",
+      "dst": "PodOOMKilled"
+    },
+    {
+      "src": "NodeNotReady",
+      "rel": "leads_to",
+      "dst": "ServiceUnavailable"
+    },
+    {
+      "src": "ThreadDeadlock",
+      "rel": "leads_to",
+      "dst": "ProcessCrash"
+    },
+    {
+      "src": "MissingDependency",
+      "rel": "leads_to",
+      "dst": "InternalServerError"
+    },
+    {
+      "src": "VersionMismatch",
+      "rel": "leads_to",
+      "dst": "ProcessCrash"
+    },
+    {
+      "src": "SchemaChange",
+      "rel": "leads_to",
+      "dst": "JSONParseError"
+    },
+    {
+      "src": "MessageSerialization",
+      "rel": "leads_to",
+      "dst": "JSONParseError"
+    },
+    {
+      "src": "DataCorruption",
+      "rel": "leads_to",
+      "dst": "InternalServerError"
+    },
+    {
+      "src": "ConnectionTimeout",
+      "rel": "related_to",
+      "dst": "ConnectionRefused"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "related_to",
+      "dst": "HighCPUUsage"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "related_to",
+      "dst": "HighLatency"
+    },
+    {
+      "src": "DatabaseConnectionError",
+      "rel": "related_to",
+      "dst": "InternalServerError"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "related_to",
+      "dst": "HealthCheckFailed"
+    },
+    {
+      "src": "ReplicationLag",
+      "rel": "related_to",
+      "dst": "DataInconsistency"
+    },
+    {
+      "src": "SplitBrain",
+      "rel": "related_to",
+      "dst": "DataInconsistency"
+    },
+    {
+      "src": "ConsumerLag",
+      "rel": "related_to",
+      "dst": "MessageQueueBacklog"
+    },
+    {
+      "src": "TokenExpired",
+      "rel": "related_to",
+      "dst": "AuthenticationFailure"
+    },
+    {
+      "src": "RateLimitExceeded",
+      "rel": "related_to",
+      "dst": "ServiceUnavailable"
+    },
+    {
+      "src": "StackOverflowError",
+      "rel": "related_to",
+      "dst": "ProcessCrash"
+    },
+    {
+      "src": "JSONParseError",
+      "rel": "related_to",
+      "dst": "InternalServerError"
+    },
+    {
+      "src": "CORSError",
+      "rel": "related_to",
+      "dst": "AuthorizationDenied"
+    },
+    {
+      "src": "DiskSpaceFull",
+      "rel": "related_to",
+      "dst": "ContainerRestartLoop"
+    },
+    {
+      "src": "PersistentVolumeError",
+      "rel": "related_to",
+      "dst": "DiskSpaceFull"
+    },
+    {
+      "src": "ServiceUnavailable",
+      "rel": "caused_by",
+      "dst": "BrokerFailure"
+    },
+    {
+      "src": "GatewayTimeout",
+      "rel": "caused_by",
+      "dst": "ThreadDeadlock"
+    },
+    {
+      "src": "InternalServerError",
+      "rel": "caused_by",
+      "dst": "DataCorruption"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "caused_by",
+      "dst": "DeepRecursion"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "caused_by",
+      "dst": "TableLock"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "caused_by",
+      "dst": "ResourceQuotaExceeded"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "caused_by",
+      "dst": "NodeNotReady"
+    },
+    {
+      "src": "LoadBalancerError",
+      "rel": "caused_by",
+      "dst": "HealthCheckFailed"
+    },
+    {
+      "src": "StaleData",
+      "rel": "caused_by",
+      "dst": "NetworkPartition"
+    },
+    {
+      "src": "MessageQueueBacklog",
+      "rel": "caused_by",
+      "dst": "NetworkPartition"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "NetworkPartition",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "InfiniteLoop",
+      "rel": "fixed_by",
+      "dst": "RollbackVersion"
+    },
+    {
+      "src": "DeepRecursion",
+      "rel": "fixed_by",
+      "dst": "RollbackVersion"
+    },
+    {
+      "src": "ConfigurationError",
+      "rel": "fixed_by",
+      "dst": "RollbackVersion"
+    },
+    {
+      "src": "MissingDependency",
+      "rel": "fixed_by",
+      "dst": "RollbackVersion"
+    },
+    {
+      "src": "NodeNotReady",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "SidecarCrash",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "CachePoisoning",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "ConsumerLag",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "ProducerOverload",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "BrokerFailure",
+      "rel": "fixed_by",
+      "dst": "RestartService"
+    },
+    {
+      "src": "TransactionDeadlock",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "TableLock",
+      "rel": "fixed_by",
+      "dst": "PatchCode"
+    },
+    {
+      "src": "HighLatency",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeStackTrace"
+    },
+    {
+      "src": "GatewayTimeout",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "InternalServerError",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "OutOfMemoryError",
+      "rel": "diagnosed_by",
+      "dst": "DescribePod"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "diagnosed_by",
+      "dst": "DescribePod"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "DatabaseConnectionError",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "AuthenticationFailure",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "ContainerRestartLoop",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "DeploymentFailed",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "LoadBalancerError",
+      "rel": "diagnosed_by",
+      "dst": "TraceRequests"
+    },
+    {
+      "src": "CacheInvalidation",
+      "rel": "diagnosed_by",
+      "dst": "TraceRequests"
+    },
+    {
+      "src": "StaleData",
+      "rel": "diagnosed_by",
+      "dst": "TraceRequests"
+    },
+    {
+      "src": "MessageQueueBacklog",
+      "rel": "diagnosed_by",
+      "dst": "MonitorBrokers"
+    },
+    {
+      "src": "DeadLetterQueue",
+      "rel": "diagnosed_by",
+      "dst": "MonitorBrokers"
+    },
+    {
+      "src": "SplitBrain",
+      "rel": "diagnosed_by",
+      "dst": "AnalyzeLogs"
+    },
+    {
+      "src": "ProcessCrash",
+      "rel": "diagnosed_by",
+      "dst": "CheckResourceUsage"
+    },
+    {
+      "src": "HealthCheckFailed",
+      "rel": "diagnosed_by",
+      "dst": "CheckMetrics"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "diagnosed_by",
+      "dst": "GetEvents"
+    },
+    {
+      "src": "RunHealthCheck",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "CheckNetworkLogs",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "CheckServiceMesh",
+      "rel": "uses_tool",
+      "dst": "JaegerTool"
+    },
+    {
+      "src": "ValidateConfig",
+      "rel": "uses_tool",
+      "dst": "CurlTool"
+    },
+    {
+      "src": "CheckEnvVars",
+      "rel": "uses_tool",
+      "dst": "KubectlTool"
+    },
+    {
+      "src": "AuditPermissions",
+      "rel": "uses_tool",
+      "dst": "CurlTool"
+    },
+    {
+      "src": "MonitorReplication",
+      "rel": "uses_tool",
+      "dst": "GrafanaTool"
+    },
+    {
+      "src": "TestConnection",
+      "rel": "uses_tool",
+      "dst": "NetcatTool"
+    },
+    {
+      "src": "RunExplainPlan",
+      "rel": "uses_tool",
+      "dst": "GrafanaTool"
+    },
+    {
+      "src": "CheckLocks",
+      "rel": "uses_tool",
+      "dst": "GrafanaTool"
+    },
+    {
+      "src": "CheckCacheStats",
+      "rel": "uses_tool",
+      "dst": "GrafanaTool"
+    },
+    {
+      "src": "AnalyzeLogs",
+      "rel": "uses_tool",
+      "dst": "JaegerTool"
+    },
+    {
+      "src": "TraceRequests",
+      "rel": "uses_tool",
+      "dst": "GrafanaTool"
+    },
+    {
+      "src": "ClockSkew",
+      "rel": "leads_to",
+      "dst": "AuthenticationFailure"
+    },
+    {
+      "src": "CertificateExpired",
+      "rel": "leads_to",
+      "dst": "TLSHandshakeError"
+    },
+    {
+      "src": "CertificateMismatch",
+      "rel": "leads_to",
+      "dst": "TLSHandshakeError"
+    },
+    {
+      "src": "FirewallBlocking",
+      "rel": "leads_to",
+      "dst": "DatabaseConnectionError"
+    },
+    {
+      "src": "PortNotOpen",
+      "rel": "leads_to",
+      "dst": "ConnectionRefused"
+    },
+    {
+      "src": "NetworkPartition",
+      "rel": "leads_to",
+      "dst": "DataInconsistency"
+    },
+    {
+      "src": "DNSMisconfiguration",
+      "rel": "leads_to",
+      "dst": "ConnectionTimeout"
+    },
+    {
+      "src": "ProxyMisconfiguration",
+      "rel": "leads_to",
+      "dst": "GatewayTimeout"
+    },
+    {
+      "src": "MemoryLeak",
+      "rel": "leads_to",
+      "dst": "HighCPUUsage"
+    },
+    {
+      "src": "InfiniteLoop",
+      "rel": "leads_to",
+      "dst": "ProcessCrash"
+    },
+    {
+      "src": "ResourceExhaustion",
+      "rel": "leads_to",
+      "dst": "GatewayTimeout"
+    },
+    {
+      "src": "ThreadDeadlock",
+      "rel": "leads_to",
+      "dst": "GatewayTimeout"
+    },
+    {
+      "src": "ConnectionPoolExhausted",
+      "rel": "leads_to",
+      "dst": "ServiceUnavailable"
+    },
+    {
+      "src": "IncorrectPermissions",
+      "rel": "leads_to",
+      "dst": "PermissionDenied"
+    },
+    {
+      "src": "EnvironmentVariableMissing",
+      "rel": "leads_to",
+      "dst": "FileNotFound"
+    },
+    {
+      "src": "ImagePullFailure",
+      "rel": "leads_to",
+      "dst": "ContainerRestartLoop"
+    },
+    {
+      "src": "IngressMisconfiguration",
+      "rel": "leads_to",
+      "dst": "ServiceUnavailable"
+    },
+    {
+      "src": "MissingIndex",
+      "rel": "leads_to",
+      "dst": "GatewayTimeout"
+    },
+    {
+      "src": "QueryNotOptimized",
+      "rel": "leads_to",
+      "dst": "GatewayTimeout"
+    },
+    {
+      "src": "TooManyConnections",
+      "rel": "leads_to",
+      "dst": "ServiceUnavailable"
+    },
+    {
+      "src": "TableLock",
+      "rel": "leads_to",
+      "dst": "GatewayTimeout"
+    },
+    {
+      "src": "DataCorruption",
+      "rel": "leads_to",
+      "dst": "DataInconsistency"
+    },
+    {
+      "src": "TTLTooShort",
+      "rel": "leads_to",
+      "dst": "HighCPUUsage"
+    },
+    {
+      "src": "ConsumerLag",
+      "rel": "leads_to",
+      "dst": "StaleData"
+    },
+    {
+      "src": "ProducerOverload",
+      "rel": "leads_to",
+      "dst": "DeadLetterQueue"
+    },
+    {
+      "src": "BrokerFailure",
+      "rel": "leads_to",
+      "dst": "DeadLetterQueue"
+    },
+    {
+      "src": "SchemaChange",
+      "rel": "leads_to",
+      "dst": "InternalServerError"
+    },
+    {
+      "src": "VersionMismatch",
+      "rel": "leads_to",
+      "dst": "JSONParseError"
+    },
+    {
+      "src": "GatewayTimeout",
+      "rel": "related_to",
+      "dst": "BadGateway"
+    },
+    {
+      "src": "HighCPUUsage",
+      "rel": "related_to",
+      "dst": "ServiceUnavailable"
+    },
+    {
+      "src": "SlowQueryPerformance",
+      "rel": "related_to",
+      "dst": "DatabaseConnectionError"
+    },
+    {
+      "src": "PodOOMKilled",
+      "rel": "related_to",
+      "dst": "DeploymentFailed"
+    },
+    {
+      "src": "MessageQueueBacklog",
+      "rel": "related_to",
+      "dst": "StaleData"
+    },
+    {
+      "src": "NullPointerException",
+      "rel": "related_to",
+      "dst": "ProcessCrash"
+    },
+    {
+      "src": "StackOverflowError",
+      "rel": "related_to",
+      "dst": "SegmentationFault"
+    },
+    {
+      "src": "FileNotFound",
+      "rel": "related_to",
+      "dst": "ConfigurationError"
+    },
+    {
+      "src": "DiskSpaceFull",
+      "rel": "related_to",
+      "dst": "DeploymentFailed"
+    }
+  ]
+}

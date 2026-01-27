@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KG Reward Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>KG Reward Demo</h1>
+            <div class="controls">
+                <select id="run-select">
+                    <option value="">Select Run...</option>
+                </select>
+                <select id="phase-select">
+                    <option value="base">Base</option>
+                    <option value="sft">SFT</option>
+                    <option value="rsft">RSFT</option>
+                </select>
+                <div class="player-controls">
+                    <button id="prev-btn">◀</button>
+                    <button id="next-btn">▶</button>
+                    <button id="autoplay-btn">▶▶ Auto</button>
+                    <span id="episode-counter">0/0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main content -->
+        <main class="main">
+            <!-- Graph panel -->
+            <section class="panel graph-panel">
+                <h2>Knowledge Graph</h2>
+                <canvas id="graph-canvas"></canvas>
+            </section>
+
+            <!-- Details panel -->
+            <section class="panel details-panel">
+                <!-- Question -->
+                <div class="section question-section">
+                    <h3>Question</h3>
+                    <p id="question-text"></p>
+                    <div id="options-list" class="options"></div>
+                </div>
+
+                <!-- Model output -->
+                <div class="section output-section">
+                    <h3>Model Output</h3>
+                    <div id="trace-text" class="trace"></div>
+                    <div id="answer-text" class="answer"></div>
+                </div>
+
+                <!-- Reward breakdown -->
+                <div class="section reward-section">
+                    <h3>Reward</h3>
+                    <div class="reward-bars">
+                        <div class="reward-bar">
+                            <label>Correctness</label>
+                            <div class="bar-container">
+                                <div id="correctness-bar" class="bar"></div>
+                            </div>
+                            <span id="correctness-value">0.0</span>
+                        </div>
+                        <div class="reward-bar">
+                            <label>Path Coverage</label>
+                            <div class="bar-container">
+                                <div id="path-bar" class="bar"></div>
+                            </div>
+                            <span id="path-value">0.0</span>
+                        </div>
+                        <div class="reward-bar">
+                            <label>Spam Penalty</label>
+                            <div class="bar-container">
+                                <div id="penalty-bar" class="bar penalty"></div>
+                            </div>
+                            <span id="penalty-value">0.0</span>
+                        </div>
+                        <div class="reward-bar total">
+                            <label>Total</label>
+                            <div class="bar-container">
+                                <div id="total-bar" class="bar"></div>
+                            </div>
+                            <span id="total-value">0.0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Metrics footer -->
+        <footer class="metrics-footer">
+            <div class="metric">
+                <span class="label">Accuracy</span>
+                <span id="metric-accuracy" class="value">--</span>
+            </div>
+            <div class="metric">
+                <span class="label">Avg Coverage</span>
+                <span id="metric-coverage" class="value">--</span>
+            </div>
+            <div class="metric">
+                <span class="label">Avg Reward</span>
+                <span id="metric-reward" class="value">--</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
