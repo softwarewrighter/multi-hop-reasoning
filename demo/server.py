@@ -121,7 +121,8 @@ class DemoHandler(SimpleHTTPRequestHandler):
 
 def main():
     """Run the demo server."""
-    port = 8080
+    # Port 3519 chosen to avoid conflicts with common services on 8080
+    port = 3519
     server = HTTPServer(("localhost", port), DemoHandler)
 
     print(f"Demo server running at http://localhost:{port}")

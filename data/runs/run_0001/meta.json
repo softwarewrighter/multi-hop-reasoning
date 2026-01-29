@@ -1,0 +1,11 @@
+{
+  "model": "HuggingFaceTB/SmolLM-135M-Instruct",
+  "created": "2025-01-27T15:00:00Z",
+  "description": "Demo run with sample data",
+  "phases": [
+    "base",
+    "sft",
+    "rsft"
+  ],
+  "num_examples": 20
+}
