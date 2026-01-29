@@ -77,6 +77,7 @@ def run_inference(
     """
     try:
         from mlx_lm import generate
+        from mlx_lm.sample_utils import make_sampler
     except ImportError:
         raise ImportError("mlx-lm is required. Install with: pip install mlx-lm")
 
@@ -95,13 +96,16 @@ def run_inference(
     else:
         formatted_prompt = prompt
 
+    # Create sampler with temperature
+    sampler = make_sampler(temp=temperature)
+
     # Generate completion
     completion = generate(
         model,
         tokenizer,
         prompt=formatted_prompt,
         max_tokens=max_tokens,
-        temp=temperature,
+        sampler=sampler,
         verbose=verbose
     )
 

@@ -152,8 +152,9 @@ def train_lora(
 
         # Run training using mlx_lm CLI
         # This is the most reliable way to use mlx_lm for training
+        import sys
         cmd = [
-            "python", "-m", "mlx_lm.lora",
+            sys.executable, "-m", "mlx_lm.lora",
             "--model", base_model,
             "--train",
             "--data", str(train_data.parent),
@@ -161,9 +162,10 @@ def train_lora(
             "--iters", str(train_config["num_iters"]),
             "--batch-size", str(train_config["batch_size"]),
             "--learning-rate", str(train_config["learning_rate"]),
-            "--lora-layers", str(lora_config["lora_layers"]),
-            "--lora-rank", str(lora_config["lora_rank"]),
+            "--num-layers", str(lora_config["lora_layers"]),
             "--seed", str(train_config["seed"]),
+            "--steps-per-report", "50",
+            "--save-every", str(train_config["num_iters"]),
         ]
 
         if train_config.get("grad_checkpoint"):
@@ -213,16 +215,14 @@ def train_lora_simple(
     lora_config: Dict[str, Any]
 ) -> Path:
     """
-    Simplified LoRA training using mlx_lm internals.
-
-    This is a fallback if the CLI approach fails.
+    Simple LoRA training loop with MLX.
     """
     try:
         import mlx.core as mx
         import mlx.nn as nn
         import mlx.optimizers as optim
+        import numpy as np
         from mlx_lm import load
-        from mlx_lm.tuner.trainer import TrainingArgs, train
         from mlx_lm.tuner.utils import linear_to_lora_layers
     except ImportError as e:
         raise ImportError(f"MLX-LM required for training: {e}")
@@ -234,7 +234,8 @@ def train_lora_simple(
     # Load model
     model, tokenizer = load(base_model)
 
-    # Convert to LoRA
+    # Convert to LoRA - this adds LoRA layers to the model
+    # mlx-lm's linear_to_lora_layers adds trainable LoRA parameters
     linear_to_lora_layers(
         model,
         lora_config["lora_layers"],
@@ -246,105 +247,92 @@ def train_lora_simple(
         })
     )
 
-    # Freeze non-LoRA parameters
-    model.freeze()
-    for name, module in model.named_modules():
-        if "lora" in name.lower():
-            module.unfreeze()
+    # Put model in training mode
+    model.train()
 
-    # Load training data
-    def load_data(path):
-        data = []
-        with open(path) as f:
-            for line in f:
-                item = json.loads(line)
-                data.append(item["text"])
-        return data
+    # Load and tokenize training data
+    train_tokens = []
+    with open(train_data) as f:
+        for line in f:
+            item = json.loads(line)
+            tokens = tokenizer.encode(item["text"])
+            if len(tokens) > 512:
+                tokens = tokens[:512]
+            train_tokens.append(tokens)
+    print(f"  Loaded {len(train_tokens)} training examples")
 
-    train_texts = load_data(train_data)
-    print(f"  Loaded {len(train_texts)} training examples")
-
-    # Tokenize
-    def tokenize(texts, tokenizer, max_length=512):
-        tokenized = []
-        for text in texts:
-            tokens = tokenizer.encode(text)
-            if len(tokens) > max_length:
-                tokens = tokens[:max_length]
-            tokenized.append(tokens)
-        return tokenized
-
-    train_tokens = tokenize(train_texts, tokenizer)
-
-    # Simple training loop
+    # Setup optimizer
     optimizer = optim.Adam(learning_rate=train_config["learning_rate"])
-
-    def loss_fn(model, tokens):
-        # Simple causal LM loss
-        inputs = mx.array(tokens[:-1])
-        targets = mx.array(tokens[1:])
-        logits = model(inputs[None, :])
-        loss = nn.losses.cross_entropy(logits[0], targets)
-        return mx.mean(loss)
-
-    loss_and_grad = nn.value_and_grad(model, loss_fn)
 
     num_iters = train_config["num_iters"]
     batch_size = train_config["batch_size"]
 
+    # Loss function - takes model as first argument (required by nn.value_and_grad)
+    def loss_fn(model, inputs, targets, lengths):
+        logits = model(inputs)
+        # Create mask for valid positions
+        steps = mx.arange(targets.shape[1])
+        mask = steps[None, :] < lengths[:, None]
+        # Compute cross entropy loss
+        ce = nn.losses.cross_entropy(logits, targets)
+        ce = (ce * mask).sum() / mask.sum()
+        return ce
+
+    # Gradient function - compute gradients w.r.t. model's trainable parameters
+    loss_value_and_grad = nn.value_and_grad(model, loss_fn)
+
     print(f"\nStarting training for {num_iters} iterations...")
-
-    for step in range(num_iters):
-        # Sample batch
-        batch_indices = mx.random.randint(0, len(train_tokens), (batch_size,)).tolist()
-        batch_loss = 0.0
-
-        for idx in batch_indices:
-            tokens = train_tokens[idx]
-            if len(tokens) < 2:
-                continue
-
-            loss, grads = loss_and_grad(model, tokens)
-            optimizer.update(model, grads)
-            mx.eval(model.parameters())
-            batch_loss += loss.item()
-
-        if (step + 1) % 50 == 0:
-            avg_loss = batch_loss / max(1, batch_size)
-            print(f"  Step {step + 1}/{num_iters}, Loss: {avg_loss:.4f}")
-
-    # Save adapter weights
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Collect LoRA weights
-    lora_weights = {}
-    for name, param in model.named_parameters():
-        if "lora" in name.lower():
-            lora_weights[name] = param
+    for step in range(num_iters):
+        # Sample batch indices
+        indices = np.random.choice(len(train_tokens), size=batch_size, replace=True)
 
-    # Save using safetensors
-    try:
-        from safetensors.numpy import save_file
-        import numpy as np
+        # Prepare batch with padding
+        batch_tokens = [train_tokens[i] for i in indices]
+        max_len = max(len(t) for t in batch_tokens)
+        lengths = mx.array([len(t) - 1 for t in batch_tokens])  # -1 because targets are shifted
 
-        weights_dict = {k: np.array(v) for k, v in lora_weights.items()}
-        save_file(weights_dict, str(output_dir / "adapters.safetensors"))
-    except ImportError:
-        # Fallback to numpy
-        import numpy as np
-        weights_dict = {k: np.array(v) for k, v in lora_weights.items()}
-        np.savez(str(output_dir / "adapters.npz"), **weights_dict)
+        # Pad sequences
+        padded = np.zeros((batch_size, max_len), dtype=np.int32)
+        for i, tokens in enumerate(batch_tokens):
+            padded[i, :len(tokens)] = tokens
 
-    # Save adapter config
+        inputs = mx.array(padded[:, :-1])
+        targets = mx.array(padded[:, 1:])
+
+        # Forward and backward pass
+        loss, grads = loss_value_and_grad(model, inputs, targets, lengths)
+        optimizer.update(model, grads)
+        mx.eval(model.parameters(), optimizer.state)
+
+        if (step + 1) % 50 == 0:
+            print(f"  Step {step + 1}/{num_iters}, Loss: {loss.item():.4f}")
+
+    # Save adapter weights
+    print(f"\nSaving adapters...")
+    from mlx.utils import tree_flatten
+    weights = dict(tree_flatten(model.trainable_parameters()))
+
+    # Save using mlx's save_safetensors
+    mx.save_safetensors(str(output_dir / "adapters.safetensors"), weights)
+
+    # Save adapter config in mlx-lm format
     adapter_config = {
-        "base_model": base_model,
-        "lora_config": lora_config,
+        "fine_tune_type": "lora",
+        "num_layers": lora_config["lora_layers"],
+        "lora_parameters": {
+            "rank": lora_config["lora_rank"],
+            "alpha": lora_config["lora_alpha"],
+            "dropout": lora_config.get("lora_dropout", 0.0),
+            "scale": lora_config["lora_alpha"] / lora_config["lora_rank"],
+        }
     }
     with open(output_dir / "adapter_config.json", "w") as f:
         json.dump(adapter_config, f, indent=2)
 
-    print(f"\nLoRA adapters saved to: {output_dir}")
+    print(f"LoRA adapters saved to: {output_dir}")
     return output_dir
 
 
