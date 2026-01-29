@@ -1,42 +1,42 @@
 {
-  "run_id": "run_0001",
   "splits": {
     "eval": {
-      "base": {
-        "accuracy": 0.35,
-        "avg_path_coverage": 0.18,
-        "avg_total_reward": -0.77
-      },
       "sft": {
-        "accuracy": 0.6,
-        "avg_path_coverage": 0.31,
-        "avg_total_reward": 0.11
+        "accuracy": 0.3,
+        "avg_path_coverage": 0.30833333333333335,
+        "avg_total_reward": -1.0108333333333335,
+        "n_examples": 20
+      },
+      "base": {
+        "accuracy": 0.0,
+        "avg_path_coverage": 0.0,
+        "avg_total_reward": -2.0,
+        "n_examples": 20
       },
       "rsft": {
-        "accuracy": 0.6,
-        "avg_path_coverage": 0.55,
-        "avg_total_reward": 0.35
+        "accuracy": 0.2,
+        "avg_path_coverage": 0.255,
+        "avg_total_reward": -1.3166666666666667,
+        "n_examples": 20
       }
     }
   },
   "curves": {
     "steps": [
       0,
-      20,
-      40,
-      60
+      200,
+      300
     ],
     "eval_accuracy": [
-      0.35,
-      0.35,
-      0.6,
-      0.6
+      0.0,
+      0.3,
+      0.2
     ],
     "eval_path_coverage": [
-      0.18,
-      0.18,
-      0.31,
-      0.55
+      0.0,
+      0.30833333333333335,
+      0.255
     ]
-  }
+  },
+  "run_id": "run_0001"
 }
