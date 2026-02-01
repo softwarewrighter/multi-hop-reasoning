@@ -185,8 +185,8 @@ async function runTrainingStep() {
     // 2. Render graph (vertical DOM nodes)
     renderGraph(ep.parsed.path_entities || []);
 
-    // Timing units: text=1, choice=5, evaluation=10
-    const UNIT = 200;
+    // Timing units: text=1, choice=10, evaluation=50
+    const UNIT = 100;
 
     await sleep(getDelay(UNIT * 0.5));
 
@@ -197,23 +197,23 @@ async function runTrainingStep() {
 
     await sleep(getDelay(UNIT * 1)); // 1 unit after text
 
-    // 4. Show answer (5 units to read)
+    // 4. Show answer (10 units to read)
     const isCorrect = ep.reward.correctness > 0;
     el.trainAnswer.textContent = `ANSWER: ${ep.parsed.answer}`;
     el.trainAnswer.classList.add(isCorrect ? 'correct' : 'incorrect');
 
-    await sleep(getDelay(UNIT * 5)); // 5 units for choice
+    await sleep(getDelay(UNIT * 10)); // 10 units for choice
 
-    // 5. Reward calculation (10 units total for evaluation)
+    // 5. Reward calculation (50 units total for evaluation)
     animateReward(1, isCorrect ? '+1.0 ✓' : '-2.0 ✗', isCorrect);
-    await sleep(getDelay(UNIT * 2.5));
+    await sleep(getDelay(UNIT * 12.5));
 
     animateReward(2, `+${ep.reward.path_coverage.toFixed(2)}`, true);
-    await sleep(getDelay(UNIT * 2.5));
+    await sleep(getDelay(UNIT * 12.5));
 
     const total = ep.reward.total;
     animateReward(3, total >= 0 ? `+${total.toFixed(2)}` : total.toFixed(2), total >= 0);
-    await sleep(getDelay(UNIT * 2.5));
+    await sleep(getDelay(UNIT * 12.5));
 
     // Decision
     if (total > 0) {
@@ -224,7 +224,7 @@ async function runTrainingStep() {
         el.rewardDecision.className = 'reward-decision discard';
     }
 
-    await sleep(getDelay(UNIT * 2.5)); // remainder of 10 units
+    await sleep(getDelay(UNIT * 12.5)); // remainder of 50 units
 
     // 6. Update progress
     const simAcc = state.currentPhase === 'sft'
