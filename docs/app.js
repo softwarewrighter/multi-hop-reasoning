@@ -64,8 +64,8 @@ const el = {
 async function init() {
     try {
         const [kgRes, epRes] = await Promise.all([
-            fetch('./kg.json'),
-            fetch('./episodes.json')
+            fetch('/multi-hop-reasoning/kg.json'),
+            fetch('/multi-hop-reasoning/episodes.json')
         ]);
         state.kg = await kgRes.json();
         const data = await epRes.json();
