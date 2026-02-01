@@ -17,6 +17,25 @@ This project implements a complete pipeline for training small language models t
 - **RSFT**: Rejection Sampling Fine-Tuning (RL-lite approach)
 - **Demo UI**: Interactive visualization of training progress
 
+## Results
+
+| Phase | Accuracy | Notes |
+|-------|----------|-------|
+| Base (SmolLM-135M) | 0% | No format compliance |
+| SFT (200 iters) | 30% | Learns TRACE + ANSWER format |
+| RSFT (eval distribution) | **75%** | Distribution-matched training |
+
+See [docs/training-status.md](docs/training-status.md) for details on model storage and continuing training.
+
+## Demo
+
+```bash
+python demo/server.py
+# Open http://localhost:3519
+```
+
+The demo visualizes training (with knowledge graph scoring) and inference (without graph access).
+
 ## Quick Start
 
 ```bash
@@ -91,6 +110,8 @@ See [spec/reward.md](spec/reward.md) for full specification.
 
 ## Documentation
 
+- [docs/eli5.md](docs/eli5.md) - ELI5 explanation of the project and key findings
+- [docs/training-status.md](docs/training-status.md) - Current results, model storage, continuing training
 - [spec/schemas.md](spec/schemas.md) - Data file schemas (kg.json, train.jsonl, episodes.jsonl, etc.)
 - [spec/reward.md](spec/reward.md) - Reward function specification
 - [docs/process.md](docs/process.md) - Development process and TDD guidelines
