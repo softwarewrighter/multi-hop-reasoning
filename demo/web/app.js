@@ -396,27 +396,30 @@ async function runTestStep() {
         el.testOptions.appendChild(div);
     });
 
-    await sleep(getDelay(300));
+    // Timing: text=200ms, choice=1500ms, result=3000ms
 
-    // Typewriter
+    // Typewriter (fast, 5ms per char at 1x)
     const trace = ep.parsed.trace_text || 'Thinking...';
-    await typewriter(el.testTrace, trace, getDelay(20));
+    await typewriter(el.testTrace, trace, getDelay(5));
 
-    await sleep(getDelay(200));
+    await sleep(getDelay(200)); // 200ms after text
 
-    // Answer
+    // Answer (1.5 seconds to read the choice)
     const answer = ep.parsed.answer;
     const isCorrect = ep.reward.correctness > 0;
 
+    el.testAnswer.textContent = `ANSWER: ${answer}`;
+    el.testAnswer.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+    await sleep(getDelay(1500)); // 1.5s for choice
+
+    // Highlight correct/wrong option (3 seconds to see result)
     const selected = document.getElementById(`opt-${answer}`);
     if (selected) {
         selected.classList.add('selected');
         if (isCorrect) selected.classList.add('correct');
         else selected.classList.add('wrong');
     }
-
-    el.testAnswer.textContent = `ANSWER: ${answer}`;
-    el.testAnswer.classList.add(isCorrect ? 'correct' : 'incorrect');
 
     if (isCorrect) state.testCorrect++;
     else state.testWrong++;
@@ -427,7 +430,7 @@ async function runTestStep() {
     const acc = ((state.testCorrect / state.testIndex) * 100).toFixed(0);
     el.testAccuracy.textContent = `${acc}%`;
 
-    await sleep(getDelay(800));
+    await sleep(getDelay(3000)); // 3s to see green/red result
 
     if (state.isRunning) runTestStep();
 }
