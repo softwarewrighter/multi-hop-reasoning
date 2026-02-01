@@ -19,10 +19,18 @@ let state = {
     autoplaySpeed: 2000 // ms between episodes
 };
 
+// Phase descriptions for tooltips
+const PHASE_TOOLTIPS = {
+    base: "Untrained model — just the pre-trained LLM with no task-specific training",
+    sft: "Supervised Fine-Tuning — model trained on reference traces showing correct reasoning",
+    rsft: "Rejection Sampling Fine-Tuning — RL-lite approach that trains on high-reward outputs"
+};
+
 // DOM elements
 const elements = {
     runSelect: document.getElementById('run-select'),
     phaseSelect: document.getElementById('phase-select'),
+    phaseTooltip: document.getElementById('phase-tooltip'),
     prevBtn: document.getElementById('prev-btn'),
     nextBtn: document.getElementById('next-btn'),
     autoplayBtn: document.getElementById('autoplay-btn'),
@@ -79,6 +87,9 @@ async function init() {
     elements.nextBtn.addEventListener('click', nextEpisode);
     elements.autoplayBtn.addEventListener('click', toggleAutoplay);
 
+    // Initial tooltip
+    updatePhaseTooltip();
+
     // Initial render
     if (state.runs.length > 0) {
         elements.runSelect.value = state.runs[0].id;
@@ -110,7 +121,13 @@ async function onRunChange() {
 function onPhaseChange() {
     state.currentPhase = elements.phaseSelect.value;
     state.currentEpisode = 0;
+    updatePhaseTooltip();
     filterAndRender();
+}
+
+function updatePhaseTooltip() {
+    const phase = elements.phaseSelect.value;
+    elements.phaseTooltip.textContent = PHASE_TOOLTIPS[phase] || '';
 }
 
 function getFilteredEpisodes() {

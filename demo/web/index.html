@@ -15,11 +15,14 @@
                 <select id="run-select">
                     <option value="">Select Run...</option>
                 </select>
-                <select id="phase-select">
-                    <option value="base">Base</option>
-                    <option value="sft">SFT</option>
-                    <option value="rsft">RSFT</option>
-                </select>
+                <div class="phase-select-wrapper">
+                    <select id="phase-select">
+                        <option value="base">Base</option>
+                        <option value="sft">SFT</option>
+                        <option value="rsft">RSFT</option>
+                    </select>
+                    <div class="phase-tooltip" id="phase-tooltip"></div>
+                </div>
                 <div class="player-controls">
                     <button id="prev-btn">◀</button>
                     <button id="next-btn">▶</button>
