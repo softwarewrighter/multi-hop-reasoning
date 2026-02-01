@@ -29,6 +29,9 @@ See [documentation/training-status.md](documentation/training-status.md) for det
 
 ## Demo
 
+**Live Demo:** [https://softwarewrighter.github.io/multi-hop-reasoning/](https://softwarewrighter.github.io/multi-hop-reasoning/)
+
+Or run locally:
 ```bash
 python demo/server.py
 # Open http://localhost:3519
