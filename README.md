@@ -39,6 +39,12 @@ python demo/server.py
 
 The demo visualizes training (with knowledge graph scoring) and inference (without graph access).
 
+**Training View:** Knowledge graph scores model outputs in real-time
+![Training Demo](images/screenshot-training.png?ts=1769921411000)
+
+**Inference View:** Model reasons without graph access
+![Inference Demo](images/screenshot-testing.png?ts=1769921411000)
+
 ## Quick Start
 
 ```bash
