@@ -185,35 +185,32 @@ async function runTrainingStep() {
     // 2. Render graph (vertical DOM nodes)
     renderGraph(ep.parsed.path_entities || []);
 
-    // Timing units: text=1, choice=10, evaluation=50
-    const UNIT = 100;
-
-    await sleep(getDelay(UNIT * 0.5));
+    // Exact timing at 1x speed: text=200ms, choice=1500ms, evaluation=4500ms
 
     // 3. Typewriter with node highlighting (fast)
     const trace = ep.parsed.trace_text || 'Analyzing...';
     const traceEntities = ep.parsed.trace_entities || [];
-    await typewriterWithHighlight(el.trainOutput, trace, traceEntities, getDelay(8));
+    await typewriterWithHighlight(el.trainOutput, trace, traceEntities, getDelay(5));
 
-    await sleep(getDelay(UNIT * 1)); // 1 unit after text
+    await sleep(getDelay(200)); // 200ms after text
 
-    // 4. Show answer (10 units to read)
+    // 4. Show answer (1.5 seconds to read)
     const isCorrect = ep.reward.correctness > 0;
     el.trainAnswer.textContent = `ANSWER: ${ep.parsed.answer}`;
     el.trainAnswer.classList.add(isCorrect ? 'correct' : 'incorrect');
 
-    await sleep(getDelay(UNIT * 10)); // 10 units for choice
+    await sleep(getDelay(1500)); // 1.5s for choice
 
-    // 5. Reward calculation (50 units total for evaluation)
+    // 5. Reward calculation (4.5 seconds total = 1125ms per step)
     animateReward(1, isCorrect ? '+1.0 ✓' : '-2.0 ✗', isCorrect);
-    await sleep(getDelay(UNIT * 12.5));
+    await sleep(getDelay(1125));
 
     animateReward(2, `+${ep.reward.path_coverage.toFixed(2)}`, true);
-    await sleep(getDelay(UNIT * 12.5));
+    await sleep(getDelay(1125));
 
     const total = ep.reward.total;
     animateReward(3, total >= 0 ? `+${total.toFixed(2)}` : total.toFixed(2), total >= 0);
-    await sleep(getDelay(UNIT * 12.5));
+    await sleep(getDelay(1125));
 
     // Decision
     if (total > 0) {
@@ -224,7 +221,7 @@ async function runTrainingStep() {
         el.rewardDecision.className = 'reward-decision discard';
     }
 
-    await sleep(getDelay(UNIT * 12.5)); // remainder of 50 units
+    await sleep(getDelay(1125)); // 4th step of evaluation
 
     // 6. Update progress
     const simAcc = state.currentPhase === 'sft'
