@@ -124,7 +124,7 @@ function startTraining() {
     el.startTrainingBtn.classList.add('running');
     el.phaseSft.classList.add('active');
     el.phaseRsft.classList.remove('active');
-    el.phaseBase.classList.add('complete');
+    // Base stays skipped (not complete) - we start from SFT
 
     runTrainingStep();
 }
@@ -153,7 +153,7 @@ function skipToEnd() {
     el.phaseSft.classList.remove('active');
     el.phaseSft.classList.add('complete');
     el.phaseRsft.classList.add('active');
-    el.phaseBase.classList.add('complete');
+    // Base stays skipped - we don't train from scratch
 
     drawProgress();
     stopTraining();
@@ -185,34 +185,37 @@ async function runTrainingStep() {
     // 2. Render graph (vertical DOM nodes)
     renderGraph(ep.parsed.path_entities || []);
 
-    await sleep(getDelay(100));
+    // Timing units: text=1, choice=2, evaluation=3
+    const UNIT = 400;
 
-    // 3. Typewriter with node highlighting (fast - 8ms per char base)
+    await sleep(getDelay(UNIT * 0.25));
+
+    // 3. Typewriter with node highlighting (fast)
     const trace = ep.parsed.trace_text || 'Analyzing...';
     const traceEntities = ep.parsed.trace_entities || [];
     await typewriterWithHighlight(el.trainOutput, trace, traceEntities, getDelay(8));
 
-    await sleep(getDelay(300));
+    await sleep(getDelay(UNIT * 1)); // 1 unit after text
 
-    // 4. Show answer (slower - let viewer read it)
+    // 4. Show answer (2 units to read)
     const isCorrect = ep.reward.correctness > 0;
     el.trainAnswer.textContent = `ANSWER: ${ep.parsed.answer}`;
     el.trainAnswer.classList.add(isCorrect ? 'correct' : 'incorrect');
 
-    await sleep(getDelay(600));
+    await sleep(getDelay(UNIT * 2)); // 2 units for choice
 
-    // 5. Reward calculation (slower - let viewer see each step)
+    // 5. Reward calculation (3 units total for evaluation)
     animateReward(1, isCorrect ? '+1.0 ✓' : '-2.0 ✗', isCorrect);
-    await sleep(getDelay(500));
+    await sleep(getDelay(UNIT * 0.75));
 
     animateReward(2, `+${ep.reward.path_coverage.toFixed(2)}`, true);
-    await sleep(getDelay(500));
+    await sleep(getDelay(UNIT * 0.75));
 
     const total = ep.reward.total;
     animateReward(3, total >= 0 ? `+${total.toFixed(2)}` : total.toFixed(2), total >= 0);
-    await sleep(getDelay(500));
+    await sleep(getDelay(UNIT * 0.75));
 
-    // Decision (longer pause to register)
+    // Decision
     if (total > 0) {
         el.rewardDecision.textContent = '✓ KEEP for training';
         el.rewardDecision.className = 'reward-decision keep';
@@ -221,7 +224,7 @@ async function runTrainingStep() {
         el.rewardDecision.className = 'reward-decision discard';
     }
 
-    await sleep(getDelay(800));
+    await sleep(getDelay(UNIT * 0.75)); // remainder of 3 units
 
     // 6. Update progress
     const simAcc = state.currentPhase === 'sft'

@@ -122,6 +122,30 @@ body {
     border: 1px solid var(--success);
 }
 
+.phase-item.skipped {
+    opacity: 0.6;
+    position: relative;
+}
+
+.phase-item.skipped .phase-name,
+.phase-item.skipped .phase-acc,
+.phase-item.skipped .phase-desc {
+    text-decoration: line-through;
+    text-decoration-color: var(--text-dim);
+}
+
+.phase-skip-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--warning);
+    color: var(--bg-dark);
+    font-size: 8px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
 .phase-name { font-weight: 600; font-size: 13px; }
 .phase-acc { font-size: 18px; font-weight: 700; color: var(--success); }
 .phase-desc { font-size: 10px; color: var(--text-dim); }
