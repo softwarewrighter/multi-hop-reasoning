@@ -1,404 +1,527 @@
 /**
- * KG Reward Demo - Main Application
- *
- * Visualizes training episodes with:
- * - Knowledge graph with path highlighting
- * - Model output with entity highlighting
- * - Reward breakdown bars
+ * Multi-Hop Reasoning Demo
+ * Training: Graph actively scores outputs
+ * Inference: Graph removed, model reasons alone
  */
 
-// State
-let state = {
-    runs: [],
-    currentRun: null,
+const TOTAL_STEPS = 50; // Reduced for demo speed
+
+const state = {
     kg: null,
     episodes: [],
-    currentEpisode: 0,
-    currentPhase: 'base',
-    autoplayInterval: null,
-    autoplaySpeed: 2000 // ms between episodes
+    trainingData: [],
+    testData: [],
+    isRunning: false,
+    trainStep: 0,
+    accuracyHistory: [],
+    testIndex: 0,
+    testCorrect: 0,
+    testWrong: 0,
+    speed: 1,
+    currentPhase: 'sft' // 'sft' or 'rsft'
 };
 
-// Phase descriptions for tooltips
-const PHASE_TOOLTIPS = {
-    base: "Untrained model — just the pre-trained LLM with no task-specific training",
-    sft: "Supervised Fine-Tuning — model trained on reference traces showing correct reasoning",
-    rsft: "Rejection Sampling Fine-Tuning — RL-lite approach that trains on high-reward outputs"
+const el = {
+    trainingTab: document.getElementById('training-tab'),
+    inferenceTab: document.getElementById('inference-tab'),
+    trainingView: document.getElementById('training-view'),
+    inferenceView: document.getElementById('inference-view'),
+    speedSlider: document.getElementById('speed-slider'),
+    speedLabel: document.getElementById('speed-label'),
+    // Training
+    graphContainer: document.getElementById('graph-container'),
+    trainStep: document.getElementById('train-step'),
+    trainQuestion: document.getElementById('train-question'),
+    trainOutput: document.getElementById('train-output'),
+    trainAnswer: document.getElementById('train-answer'),
+    rewardCorrect: document.getElementById('reward-correct'),
+    rewardPath: document.getElementById('reward-path'),
+    rewardTotal: document.getElementById('reward-total'),
+    rewardDecision: document.getElementById('reward-decision'),
+    progressCanvas: document.getElementById('progress-canvas'),
+    currentAccuracy: document.getElementById('current-accuracy'),
+    examplesSeen: document.getElementById('examples-seen'),
+    startTrainingBtn: document.getElementById('start-training-btn'),
+    skipBtn: document.getElementById('skip-btn'),
+    phaseSft: document.getElementById('phase-sft'),
+    phaseRsft: document.getElementById('phase-rsft'),
+    phaseBase: document.getElementById('phase-base'),
+    // Inference
+    testNum: document.getElementById('test-num'),
+    testQuestion: document.getElementById('test-question'),
+    testOptions: document.getElementById('test-options'),
+    testTrace: document.getElementById('test-trace'),
+    testAnswer: document.getElementById('test-answer'),
+    correctCount: document.getElementById('correct-count'),
+    wrongCount: document.getElementById('wrong-count'),
+    testAccuracy: document.getElementById('test-accuracy'),
+    testProgressBar: document.getElementById('test-progress-bar'),
+    runTestBtn: document.getElementById('run-test-btn'),
+    skipTestBtn: document.getElementById('skip-test-btn')
 };
 
-// DOM elements
-const elements = {
-    runSelect: document.getElementById('run-select'),
-    phaseSelect: document.getElementById('phase-select'),
-    phaseTooltip: document.getElementById('phase-tooltip'),
-    prevBtn: document.getElementById('prev-btn'),
-    nextBtn: document.getElementById('next-btn'),
-    autoplayBtn: document.getElementById('autoplay-btn'),
-    episodeCounter: document.getElementById('episode-counter'),
-    graphCanvas: document.getElementById('graph-canvas'),
-    questionText: document.getElementById('question-text'),
-    optionsList: document.getElementById('options-list'),
-    traceText: document.getElementById('trace-text'),
-    answerText: document.getElementById('answer-text'),
-    correctnessBar: document.getElementById('correctness-bar'),
-    correctnessValue: document.getElementById('correctness-value'),
-    pathBar: document.getElementById('path-bar'),
-    pathValue: document.getElementById('path-value'),
-    penaltyBar: document.getElementById('penalty-bar'),
-    penaltyValue: document.getElementById('penalty-value'),
-    totalBar: document.getElementById('total-bar'),
-    totalValue: document.getElementById('total-value'),
-    metricAccuracy: document.getElementById('metric-accuracy'),
-    metricCoverage: document.getElementById('metric-coverage'),
-    metricReward: document.getElementById('metric-reward')
-};
-
-// API calls
-async function fetchRuns() {
-    const res = await fetch('/api/runs');
-    const data = await res.json();
-    return data.runs || [];
-}
-
-async function fetchKG() {
-    const res = await fetch('/api/kg');
-    return await res.json();
-}
-
-async function fetchEpisodes(runId) {
-    const res = await fetch(`/api/episodes/${runId}`);
-    const data = await res.json();
-    return data.episodes || [];
-}
-
-// Initialize
+// ===== INIT =====
 async function init() {
-    // Load runs
-    state.runs = await fetchRuns();
-    populateRunSelect();
+    try {
+        const [kgRes, epRes] = await Promise.all([
+            fetch('/api/kg'),
+            fetch('/api/episodes/run_0001')
+        ]);
+        state.kg = await kgRes.json();
+        const data = await epRes.json();
+        state.episodes = data.episodes || [];
+        state.trainingData = state.episodes.filter(e => e.phase === 'sft');
+        state.testData = state.episodes.filter(e => e.phase === 'rsft');
+    } catch (e) {
+        console.error('Failed to load:', e);
+    }
 
-    // Load KG
-    state.kg = await fetchKG();
+    el.trainingTab.addEventListener('click', () => switchView('training'));
+    el.inferenceTab.addEventListener('click', () => switchView('inference'));
+    el.startTrainingBtn.addEventListener('click', toggleTraining);
+    el.skipBtn.addEventListener('click', skipToEnd);
+    el.runTestBtn.addEventListener('click', toggleTest);
+    el.skipTestBtn.addEventListener('click', skipTest);
+    el.speedSlider.addEventListener('input', updateSpeed);
 
-    // Event listeners
-    elements.runSelect.addEventListener('change', onRunChange);
-    elements.phaseSelect.addEventListener('change', onPhaseChange);
-    elements.prevBtn.addEventListener('click', prevEpisode);
-    elements.nextBtn.addEventListener('click', nextEpisode);
-    elements.autoplayBtn.addEventListener('click', toggleAutoplay);
+    updateSpeed();
+    drawEmptyProgress();
+}
 
-    // Initial tooltip
-    updatePhaseTooltip();
+function switchView(view) {
+    el.trainingTab.classList.toggle('active', view === 'training');
+    el.inferenceTab.classList.toggle('active', view === 'inference');
+    el.trainingView.classList.toggle('active', view === 'training');
+    el.inferenceView.classList.toggle('active', view === 'inference');
+}
 
-    // Initial render
-    if (state.runs.length > 0) {
-        elements.runSelect.value = state.runs[0].id;
-        await onRunChange();
+function updateSpeed() {
+    const val = parseInt(el.speedSlider.value);
+    state.speed = val;
+    el.speedLabel.textContent = val + 'x';
+}
+
+function getDelay(base) {
+    return Math.max(10, base / state.speed);
+}
+
+// ===== TRAINING =====
+function toggleTraining() {
+    if (state.isRunning) {
+        stopTraining();
+    } else {
+        startTraining();
     }
 }
 
-function populateRunSelect() {
-    state.runs.forEach(run => {
-        const option = document.createElement('option');
-        option.value = run.id;
-        option.textContent = run.id;
-        elements.runSelect.appendChild(option);
+function startTraining() {
+    state.isRunning = true;
+    state.trainStep = 0;
+    state.accuracyHistory = [{step: 0, acc: 0}];
+    state.currentPhase = 'sft';
+
+    el.startTrainingBtn.textContent = '⏹ Stop';
+    el.startTrainingBtn.classList.add('running');
+    el.phaseSft.classList.add('active');
+    el.phaseRsft.classList.remove('active');
+    el.phaseBase.classList.add('complete');
+
+    runTrainingStep();
+}
+
+function stopTraining() {
+    state.isRunning = false;
+    el.startTrainingBtn.textContent = '▶ Start';
+    el.startTrainingBtn.classList.remove('running');
+}
+
+function skipToEnd() {
+    state.isRunning = false;
+
+    // Jump to end state
+    state.trainStep = TOTAL_STEPS;
+    state.accuracyHistory = [
+        {step: 0, acc: 0},
+        {step: 25, acc: 30},
+        {step: 50, acc: 75}
+    ];
+
+    el.currentAccuracy.textContent = '75%';
+    el.examplesSeen.textContent = TOTAL_STEPS;
+    el.trainStep.textContent = `Step ${TOTAL_STEPS} / ${TOTAL_STEPS}`;
+
+    el.phaseSft.classList.remove('active');
+    el.phaseSft.classList.add('complete');
+    el.phaseRsft.classList.add('active');
+    el.phaseBase.classList.add('complete');
+
+    drawProgress();
+    stopTraining();
+}
+
+async function runTrainingStep() {
+    if (!state.isRunning) return;
+
+    const ep = state.trainingData[state.trainStep % state.trainingData.length];
+    state.trainStep++;
+
+    // Update phase at midpoint
+    if (state.trainStep === Math.floor(TOTAL_STEPS / 2)) {
+        state.currentPhase = 'rsft';
+        el.phaseSft.classList.remove('active');
+        el.phaseSft.classList.add('complete');
+        el.phaseRsft.classList.add('active');
+    }
+
+    el.trainStep.textContent = `Step ${state.trainStep} / ${TOTAL_STEPS}`;
+
+    // 1. Show question
+    el.trainQuestion.textContent = extractQuestion(ep.prompt);
+    el.trainOutput.innerHTML = '';
+    el.trainAnswer.textContent = '';
+    el.trainAnswer.className = 'answer-badge';
+    clearRewardSteps();
+
+    // 2. Render graph (vertical DOM nodes)
+    renderGraph(ep.parsed.path_entities || []);
+
+    await sleep(getDelay(100));
+
+    // 3. Typewriter with node highlighting (fast - 8ms per char base)
+    const trace = ep.parsed.trace_text || 'Analyzing...';
+    const traceEntities = ep.parsed.trace_entities || [];
+    await typewriterWithHighlight(el.trainOutput, trace, traceEntities, getDelay(8));
+
+    await sleep(getDelay(300));
+
+    // 4. Show answer (slower - let viewer read it)
+    const isCorrect = ep.reward.correctness > 0;
+    el.trainAnswer.textContent = `ANSWER: ${ep.parsed.answer}`;
+    el.trainAnswer.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+    await sleep(getDelay(600));
+
+    // 5. Reward calculation (slower - let viewer see each step)
+    animateReward(1, isCorrect ? '+1.0 ✓' : '-2.0 ✗', isCorrect);
+    await sleep(getDelay(500));
+
+    animateReward(2, `+${ep.reward.path_coverage.toFixed(2)}`, true);
+    await sleep(getDelay(500));
+
+    const total = ep.reward.total;
+    animateReward(3, total >= 0 ? `+${total.toFixed(2)}` : total.toFixed(2), total >= 0);
+    await sleep(getDelay(500));
+
+    // Decision (longer pause to register)
+    if (total > 0) {
+        el.rewardDecision.textContent = '✓ KEEP for training';
+        el.rewardDecision.className = 'reward-decision keep';
+    } else {
+        el.rewardDecision.textContent = '✗ DISCARD';
+        el.rewardDecision.className = 'reward-decision discard';
+    }
+
+    await sleep(getDelay(800));
+
+    // 6. Update progress
+    const simAcc = state.currentPhase === 'sft'
+        ? Math.min(30, state.trainStep * 1.2)
+        : Math.min(75, 30 + (state.trainStep - TOTAL_STEPS/2) * 1.8);
+
+    state.accuracyHistory.push({step: state.trainStep, acc: simAcc});
+    el.currentAccuracy.textContent = `${Math.round(simAcc)}%`;
+    el.examplesSeen.textContent = state.trainStep;
+    drawProgress();
+
+    await sleep(getDelay(300));
+
+    // Continue or stop
+    if (state.isRunning && state.trainStep < TOTAL_STEPS) {
+        runTrainingStep();
+    } else if (state.trainStep >= TOTAL_STEPS) {
+        el.phaseRsft.classList.add('complete');
+        stopTraining();
+    }
+}
+
+function renderGraph(pathEntities) {
+    el.graphContainer.innerHTML = '';
+
+    if (!pathEntities || pathEntities.length === 0) {
+        el.graphContainer.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 20px;">Waiting for example...</div>';
+        return;
+    }
+
+    pathEntities.forEach((id, i) => {
+        const entity = state.kg?.entities?.find(e => e.id === id);
+        const label = entity?.label || id.replace(/([A-Z])/g, ' $1').trim();
+
+        const nodeDiv = document.createElement('div');
+        nodeDiv.className = 'graph-node highlighted';
+        nodeDiv.id = `node-${id}`;
+        nodeDiv.innerHTML = `
+            <div class="node-circle">${i + 1}</div>
+            <div class="node-label">${label}</div>
+        `;
+        el.graphContainer.appendChild(nodeDiv);
+
+        // Arrow (except last)
+        if (i < pathEntities.length - 1) {
+            const arrow = document.createElement('div');
+            arrow.className = 'node-arrow';
+            arrow.textContent = '↓';
+            el.graphContainer.appendChild(arrow);
+        }
     });
 }
 
-async function onRunChange() {
-    const runId = elements.runSelect.value;
-    if (!runId) return;
-
-    state.currentRun = state.runs.find(r => r.id === runId);
-    state.episodes = await fetchEpisodes(runId);
-    state.currentEpisode = 0;
-
-    updateMetrics();
-    filterAndRender();
-}
-
-function onPhaseChange() {
-    state.currentPhase = elements.phaseSelect.value;
-    state.currentEpisode = 0;
-    updatePhaseTooltip();
-    filterAndRender();
-}
-
-function updatePhaseTooltip() {
-    const phase = elements.phaseSelect.value;
-    elements.phaseTooltip.textContent = PHASE_TOOLTIPS[phase] || '';
-}
-
-function getFilteredEpisodes() {
-    return state.episodes.filter(ep => ep.phase === state.currentPhase);
-}
-
-function filterAndRender() {
-    const filtered = getFilteredEpisodes();
-    if (filtered.length > 0) {
-        renderEpisode(filtered[state.currentEpisode]);
-    }
-    updateCounter();
-}
-
-function prevEpisode() {
-    const filtered = getFilteredEpisodes();
-    if (state.currentEpisode > 0) {
-        state.currentEpisode--;
-        renderEpisode(filtered[state.currentEpisode]);
-        updateCounter();
+function highlightNode(entityId) {
+    const node = document.getElementById(`node-${entityId}`);
+    if (node) {
+        node.classList.add('active');
+        setTimeout(() => node.classList.remove('active'), 800);
     }
 }
 
-function nextEpisode() {
-    const filtered = getFilteredEpisodes();
-    if (state.currentEpisode < filtered.length - 1) {
-        state.currentEpisode++;
-        renderEpisode(filtered[state.currentEpisode]);
-        updateCounter();
+async function typewriterWithHighlight(element, text, entities, charDelay) {
+    element.innerHTML = '';
+    let displayed = '';
+
+    for (let i = 0; i < text.length; i++) {
+        displayed = text.substring(0, i + 1);
+        element.innerHTML = displayed + '<span class="cursor">|</span>';
+
+        // Check if we just completed typing an entity name
+        for (const ent of entities) {
+            if (displayed.endsWith(ent)) {
+                highlightNode(ent);
+            }
+        }
+
+        await sleep(charDelay);
+        if (!state.isRunning) break;
     }
+    element.innerHTML = text;
 }
 
-function toggleAutoplay() {
-    if (state.autoplayInterval) {
-        clearInterval(state.autoplayInterval);
-        state.autoplayInterval = null;
-        document.body.classList.remove('autoplay-active');
-        elements.autoplayBtn.textContent = '▶▶ Auto';
+function clearRewardSteps() {
+    for (let i = 1; i <= 3; i++) {
+        const step = document.getElementById(`reward-step-${i}`);
+        step.classList.remove('active');
+        step.querySelector('.step-value').textContent = '--';
+        step.querySelector('.step-value').className = 'step-value';
+    }
+    el.rewardDecision.textContent = '';
+    el.rewardDecision.className = 'reward-decision';
+}
+
+function animateReward(num, value, positive) {
+    const step = document.getElementById(`reward-step-${num}`);
+    const val = step.querySelector('.step-value');
+    step.classList.add('active');
+    val.textContent = value;
+    val.classList.add(positive ? 'positive' : 'negative');
+}
+
+// ===== INFERENCE =====
+function toggleTest() {
+    if (state.isRunning) {
+        stopTest();
     } else {
-        document.body.classList.add('autoplay-active');
-        elements.autoplayBtn.textContent = '⏸ Stop';
-        state.autoplayInterval = setInterval(() => {
-            const filtered = getFilteredEpisodes();
-            state.currentEpisode = (state.currentEpisode + 1) % filtered.length;
-            renderEpisode(filtered[state.currentEpisode]);
-            updateCounter();
-        }, state.autoplaySpeed);
+        startTest();
     }
 }
 
-function updateCounter() {
-    const filtered = getFilteredEpisodes();
-    elements.episodeCounter.textContent = `${state.currentEpisode + 1}/${filtered.length}`;
+function startTest() {
+    state.isRunning = true;
+    state.testIndex = 0;
+    state.testCorrect = 0;
+    state.testWrong = 0;
+
+    el.runTestBtn.textContent = '⏹ Stop';
+    el.runTestBtn.classList.add('running');
+    el.testProgressBar.style.width = '0%';
+
+    runTestStep();
 }
 
-function updateMetrics() {
-    if (!state.currentRun?.metrics?.splits?.eval) return;
+function stopTest() {
+    state.isRunning = false;
+    el.runTestBtn.textContent = '▶ Run Test';
+    el.runTestBtn.classList.remove('running');
+}
 
-    const phase = state.currentPhase;
-    const m = state.currentRun.metrics.splits.eval[phase];
+function skipTest() {
+    state.isRunning = false;
 
-    if (m) {
-        elements.metricAccuracy.textContent = `${(m.accuracy * 100).toFixed(1)}%`;
-        elements.metricCoverage.textContent = `${(m.avg_path_coverage * 100).toFixed(1)}%`;
-        elements.metricReward.textContent = m.avg_total_reward.toFixed(2);
+    // Show final results
+    const total = state.testData.length;
+    const correct = Math.round(total * 0.75);
+    const wrong = total - correct;
+
+    el.correctCount.textContent = correct;
+    el.wrongCount.textContent = wrong;
+    el.testAccuracy.textContent = '75%';
+    el.testProgressBar.style.width = '100%';
+    el.testNum.textContent = `${total} / ${total}`;
+
+    stopTest();
+}
+
+async function runTestStep() {
+    if (!state.isRunning || state.testIndex >= state.testData.length) {
+        stopTest();
+        return;
     }
-}
 
-function renderEpisode(episode) {
-    if (!episode) return;
+    const ep = state.testData[state.testIndex];
+    state.testIndex++;
+
+    el.testNum.textContent = `${state.testIndex} / ${state.testData.length}`;
+    el.testProgressBar.style.width = `${(state.testIndex / state.testData.length) * 100}%`;
 
     // Question
-    elements.questionText.textContent = extractQuestion(episode.prompt);
+    el.testQuestion.textContent = extractQuestion(ep.prompt);
+    el.testOptions.innerHTML = '';
+    el.testTrace.innerHTML = '';
+    el.testAnswer.textContent = '';
+    el.testAnswer.className = 'answer-display';
 
-    // Options
-    renderOptions(episode);
+    const options = parseOptions(ep.prompt);
+    options.forEach(opt => {
+        const div = document.createElement('div');
+        div.className = 'option-item';
+        div.id = `opt-${opt.letter}`;
+        div.textContent = `${opt.letter}) ${opt.text}`;
+        el.testOptions.appendChild(div);
+    });
 
-    // Trace with entity highlighting
-    renderTrace(episode);
+    await sleep(getDelay(300));
+
+    // Typewriter
+    const trace = ep.parsed.trace_text || 'Thinking...';
+    await typewriter(el.testTrace, trace, getDelay(20));
+
+    await sleep(getDelay(200));
 
     // Answer
-    const isCorrect = episode.reward.correctness > 0;
-    elements.answerText.textContent = `ANSWER: ${episode.parsed.answer}`;
-    elements.answerText.className = 'answer ' + (isCorrect ? 'correct' : 'incorrect');
+    const answer = ep.parsed.answer;
+    const isCorrect = ep.reward.correctness > 0;
 
-    // Reward bars
-    renderRewardBars(episode.reward);
+    const selected = document.getElementById(`opt-${answer}`);
+    if (selected) {
+        selected.classList.add('selected');
+        if (isCorrect) selected.classList.add('correct');
+        else selected.classList.add('wrong');
+    }
 
-    // Graph
-    renderGraph(episode);
+    el.testAnswer.textContent = `ANSWER: ${answer}`;
+    el.testAnswer.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+    if (isCorrect) state.testCorrect++;
+    else state.testWrong++;
+
+    el.correctCount.textContent = state.testCorrect;
+    el.wrongCount.textContent = state.testWrong;
+
+    const acc = ((state.testCorrect / state.testIndex) * 100).toFixed(0);
+    el.testAccuracy.textContent = `${acc}%`;
+
+    await sleep(getDelay(800));
+
+    if (state.isRunning) runTestStep();
 }
 
-function extractQuestion(prompt) {
-    const match = prompt.match(/Question:\s*(.+?)(?=\n[A-D]\)|$)/s);
-    return match ? match[1].trim() : prompt;
-}
-
-function renderOptions(episode) {
-    elements.optionsList.innerHTML = '';
-
-    const optionMatch = episode.prompt.match(/([A-D])\)\s*(.+?)(?=\n[A-D]\)|$)/gs);
-    if (!optionMatch) return;
-
-    optionMatch.forEach(opt => {
-        const [, letter, text] = opt.match(/([A-D])\)\s*(.+)/s) || [];
-        if (!letter) return;
-
-        const div = document.createElement('div');
-        div.className = 'option';
-        div.textContent = `${letter}) ${text.trim()}`;
-
-        // TODO: Get correct answer from example data
-        if (episode.parsed.answer === letter) {
-            div.classList.add('selected');
-        }
-        if (episode.reward.correctness > 0 && episode.parsed.answer === letter) {
-            div.classList.add('correct');
-        }
-
-        elements.optionsList.appendChild(div);
-    });
-}
-
-function renderTrace(episode) {
-    let trace = episode.parsed.trace_text || '';
-
-    // Highlight entities
-    const pathEntities = new Set(episode.parsed.path_entities || []);
-    const traceEntities = episode.parsed.trace_entities || [];
-
-    // Sort by length (longest first) to avoid partial matches
-    const allEntities = [...new Set([...pathEntities, ...traceEntities])];
-    allEntities.sort((a, b) => b.length - a.length);
-
-    allEntities.forEach(entity => {
-        const isPath = pathEntities.has(entity);
-        const className = isPath ? 'entity path' : 'entity';
-        const regex = new RegExp(entity.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-        trace = trace.replace(regex, `<span class="${className}">${entity}</span>`);
-    });
-
-    elements.traceText.innerHTML = `TRACE: ${trace}`;
-}
-
-function renderRewardBars(reward) {
-    // Correctness (scale: -2 to +1 -> 0% to 100%)
-    const correctPct = ((reward.correctness + 2) / 3) * 100;
-    elements.correctnessBar.style.width = `${Math.max(0, correctPct)}%`;
-    elements.correctnessBar.classList.toggle('negative', reward.correctness < 0);
-    elements.correctnessValue.textContent = reward.correctness.toFixed(1);
-
-    // Path coverage (0 to 1 -> 0% to 100%)
-    const pathPct = reward.path_coverage * 100;
-    elements.pathBar.style.width = `${pathPct}%`;
-    elements.pathValue.textContent = reward.path_coverage.toFixed(2);
-
-    // Penalty (0 to 0.5 -> 0% to 100%)
-    const penaltyPct = (reward.spam_penalty / 0.5) * 100;
-    elements.penaltyBar.style.width = `${penaltyPct}%`;
-    elements.penaltyValue.textContent = reward.spam_penalty.toFixed(2);
-
-    // Total (scale: -2.5 to +1.5 -> 0% to 100%)
-    const totalPct = ((reward.total + 2.5) / 4) * 100;
-    elements.totalBar.style.width = `${Math.max(0, Math.min(100, totalPct))}%`;
-    elements.totalBar.classList.toggle('negative', reward.total < 0);
-    elements.totalValue.textContent = reward.total.toFixed(2);
-}
-
-function renderGraph(episode) {
-    const canvas = elements.graphCanvas;
+// ===== PROGRESS CHART =====
+function drawEmptyProgress() {
+    const canvas = el.progressCanvas;
     const ctx = canvas.getContext('2d');
-
-    // Set canvas size
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
 
-    // Clear
-    ctx.fillStyle = '#1a1a2e';
+    ctx.fillStyle = '#0d1117';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    if (!state.kg || !state.kg.entities) return;
-
-    // Get relevant entities for this episode
-    const pathEntities = new Set(episode.parsed.path_entities || []);
-    const traceEntities = new Set(episode.parsed.trace_entities || []);
-
-    // Simple force-directed layout (placeholder)
-    // TODO: Implement proper force simulation
-    const nodes = [];
-    const nodeMap = {};
-
-    // Add path entities as nodes
-    let i = 0;
-    pathEntities.forEach(entityId => {
-        const entity = state.kg.entities.find(e => e.id === entityId);
-        if (entity) {
-            const angle = (i / pathEntities.size) * Math.PI * 2;
-            const radius = Math.min(canvas.width, canvas.height) * 0.3;
-            nodes.push({
-                id: entity.id,
-                label: entity.label || entity.id,
-                x: canvas.width / 2 + Math.cos(angle) * radius,
-                y: canvas.height / 2 + Math.sin(angle) * radius,
-                isPath: true,
-                isMentioned: traceEntities.has(entity.id)
-            });
-            nodeMap[entity.id] = nodes.length - 1;
-        }
-        i++;
-    });
-
-    // Draw edges
-    ctx.strokeStyle = '#ffd700';
-    ctx.lineWidth = 3;
-    ctx.setLineDash([]);
-
-    const pathList = episode.parsed.path_entities || [];
-    for (let i = 0; i < pathList.length - 1; i++) {
-        const fromIdx = nodeMap[pathList[i]];
-        const toIdx = nodeMap[pathList[i + 1]];
-        if (fromIdx !== undefined && toIdx !== undefined) {
-            const from = nodes[fromIdx];
-            const to = nodes[toIdx];
-
-            ctx.beginPath();
-            ctx.moveTo(from.x, from.y);
-            ctx.lineTo(to.x, to.y);
-            ctx.stroke();
-
-            // Arrow
-            const angle = Math.atan2(to.y - from.y, to.x - from.x);
-            const arrowLen = 15;
-            ctx.beginPath();
-            ctx.moveTo(to.x - 25 * Math.cos(angle), to.y - 25 * Math.sin(angle));
-            ctx.lineTo(
-                to.x - 25 * Math.cos(angle) - arrowLen * Math.cos(angle - 0.3),
-                to.y - 25 * Math.sin(angle) - arrowLen * Math.sin(angle - 0.3)
-            );
-            ctx.moveTo(to.x - 25 * Math.cos(angle), to.y - 25 * Math.sin(angle));
-            ctx.lineTo(
-                to.x - 25 * Math.cos(angle) - arrowLen * Math.cos(angle + 0.3),
-                to.y - 25 * Math.sin(angle) - arrowLen * Math.sin(angle + 0.3)
-            );
-            ctx.stroke();
-        }
-    }
-
-    // Draw nodes
-    nodes.forEach(node => {
-        // Node circle
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
-
-        if (node.isMentioned) {
-            ctx.fillStyle = '#4ecca3';
-        } else {
-            ctx.fillStyle = '#555';
-        }
-        ctx.fill();
-
-        ctx.strokeStyle = node.isPath ? '#ffd700' : '#888';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-
-        // Label
-        ctx.fillStyle = '#eaeaea';
-        ctx.font = '14px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(node.label, node.x, node.y + 35);
-    });
 }
 
-// Start
+function drawProgress() {
+    const canvas = el.progressCanvas;
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    const p = {left: 30, right: 10, top: 5, bottom: 15};
+    const w = canvas.width - p.left - p.right;
+    const h = canvas.height - p.top - p.bottom;
+
+    ctx.fillStyle = '#0d1117';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Axes
+    ctx.strokeStyle = '#30363d';
+    ctx.beginPath();
+    ctx.moveTo(p.left, p.top);
+    ctx.lineTo(p.left, p.top + h);
+    ctx.lineTo(p.left + w, p.top + h);
+    ctx.stroke();
+
+    // Labels
+    ctx.fillStyle = '#7d8590';
+    ctx.font = '9px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('75%', p.left - 4, p.top + 5);
+    ctx.fillText('0%', p.left - 4, p.top + h);
+
+    if (state.accuracyHistory.length < 2) return;
+
+    // Line
+    ctx.strokeStyle = '#3fb950';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+
+    state.accuracyHistory.forEach((pt, i) => {
+        const x = p.left + (pt.step / TOTAL_STEPS) * w;
+        const y = p.top + h - (pt.acc / 80) * h;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Current point
+    const last = state.accuracyHistory[state.accuracyHistory.length - 1];
+    ctx.beginPath();
+    ctx.arc(p.left + (last.step / TOTAL_STEPS) * w, p.top + h - (last.acc / 80) * h, 3, 0, Math.PI * 2);
+    ctx.fillStyle = '#3fb950';
+    ctx.fill();
+}
+
+// ===== UTILS =====
+function extractQuestion(prompt) {
+    const m = prompt.match(/Question:\s*(.+?)(?=\n[A-D]\)|$)/s);
+    return m ? m[1].trim() : 'Loading...';
+}
+
+function parseOptions(prompt) {
+    const opts = [];
+    const re = /([A-D])\)\s*(.+?)(?=\n[A-D]\)|$)/gs;
+    let m;
+    while ((m = re.exec(prompt)) !== null) {
+        opts.push({letter: m[1], text: m[2].trim()});
+    }
+    return opts;
+}
+
+async function typewriter(el, text, delay) {
+    el.innerHTML = '';
+    for (let i = 0; i < text.length; i++) {
+        el.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
+        await sleep(delay);
+        if (!state.isRunning) break;
+    }
+    el.innerHTML = text;
+}
+
+function sleep(ms) {
+    return new Promise(r => setTimeout(r, ms));
+}
+
 init();

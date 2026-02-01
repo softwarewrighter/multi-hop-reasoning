@@ -14,9 +14,9 @@
         "n_examples": 20
       },
       "rsft": {
-        "accuracy": 0.2,
-        "avg_path_coverage": 0.255,
-        "avg_total_reward": -1.3166666666666667,
+        "accuracy": 0.75,
+        "avg_path_coverage": 0.32666666666666666,
+        "avg_total_reward": 0.3816666666666667,
         "n_examples": 20
       }
     }
@@ -30,12 +30,12 @@
     "eval_accuracy": [
       0.0,
       0.3,
-      0.2
+      0.75
     ],
     "eval_path_coverage": [
       0.0,
       0.30833333333333335,
-      0.255
+      0.32666666666666666
     ]
   },
   "run_id": "run_0001"

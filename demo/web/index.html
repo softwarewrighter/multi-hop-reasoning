@@ -3,111 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KG Reward Demo</title>
+    <title>Multi-Hop Reasoning Demo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1>KG Reward Demo</h1>
-            <div class="controls">
-                <select id="run-select">
-                    <option value="">Select Run...</option>
-                </select>
-                <div class="phase-select-wrapper">
-                    <select id="phase-select">
-                        <option value="base">Base</option>
-                        <option value="sft">SFT</option>
-                        <option value="rsft">RSFT</option>
-                    </select>
-                    <div class="phase-tooltip" id="phase-tooltip"></div>
-                </div>
-                <div class="player-controls">
-                    <button id="prev-btn">◀</button>
-                    <button id="next-btn">▶</button>
-                    <button id="autoplay-btn">▶▶ Auto</button>
-                    <span id="episode-counter">0/0</span>
-                </div>
+            <h1>Multi-Hop Reasoning</h1>
+            <div class="mode-tabs">
+                <button id="training-tab" class="tab active">Training</button>
+                <button id="inference-tab" class="tab">Inference</button>
             </div>
+            <div class="header-controls">
+                <label>Speed:</label>
+                <input type="range" id="speed-slider" min="1" max="50" value="5">
+                <span id="speed-label">1x</span>
+            </div>
+            <div class="sim-badge">SIMULATED PLAYBACK</div>
         </header>
 
-        <!-- Main content -->
-        <main class="main">
-            <!-- Graph panel -->
-            <section class="panel graph-panel">
-                <h2>Knowledge Graph</h2>
-                <canvas id="graph-canvas"></canvas>
-            </section>
+        <!-- ========== TRAINING VIEW ========== -->
+        <div id="training-view" class="view active">
+            <!-- Phase explanation -->
+            <div class="phase-bar">
+                <div class="phase-item" id="phase-base">
+                    <span class="phase-name">Base</span>
+                    <span class="phase-acc">0%</span>
+                    <span class="phase-desc">Untrained model</span>
+                </div>
+                <div class="phase-arrow">→</div>
+                <div class="phase-item active" id="phase-sft">
+                    <span class="phase-name">SFT</span>
+                    <span class="phase-acc">30%</span>
+                    <span class="phase-desc">Supervised fine-tuning</span>
+                </div>
+                <div class="phase-arrow">→</div>
+                <div class="phase-item" id="phase-rsft">
+                    <span class="phase-name">RSFT</span>
+                    <span class="phase-acc">75%</span>
+                    <span class="phase-desc">Rejection sampling FT</span>
+                </div>
+            </div>
 
-            <!-- Details panel -->
-            <section class="panel details-panel">
-                <!-- Question -->
-                <div class="section question-section">
-                    <h3>Question</h3>
-                    <p id="question-text"></p>
-                    <div id="options-list" class="options"></div>
+            <div class="training-main">
+                <!-- Left: Knowledge Graph (vertical) -->
+                <div class="panel graph-panel">
+                    <div class="panel-header">
+                        <h2>Knowledge Graph</h2>
+                        <span class="status-badge active">SCORING</span>
+                    </div>
+                    <div class="graph-container" id="graph-container">
+                        <!-- Nodes rendered here -->
+                    </div>
                 </div>
 
-                <!-- Model output -->
-                <div class="section output-section">
-                    <h3>Model Output</h3>
-                    <div id="trace-text" class="trace"></div>
-                    <div id="answer-text" class="answer"></div>
-                </div>
-
-                <!-- Reward breakdown -->
-                <div class="section reward-section">
-                    <h3>Reward</h3>
-                    <div class="reward-bars">
-                        <div class="reward-bar">
-                            <label>Correctness</label>
-                            <div class="bar-container">
-                                <div id="correctness-bar" class="bar"></div>
-                            </div>
-                            <span id="correctness-value">0.0</span>
+                <!-- Center: Current Training Example -->
+                <div class="panel example-panel">
+                    <div class="panel-header">
+                        <h2>Training Example</h2>
+                        <span id="train-step">Step 0 / 100</span>
+                    </div>
+                    <div class="example-content">
+                        <div class="question-box">
+                            <label>Question:</label>
+                            <p id="train-question">Click "Start" to begin training simulation</p>
                         </div>
-                        <div class="reward-bar">
-                            <label>Path Coverage</label>
-                            <div class="bar-container">
-                                <div id="path-bar" class="bar"></div>
-                            </div>
-                            <span id="path-value">0.0</span>
+                        <div class="output-box">
+                            <label>Model Output:</label>
+                            <div id="train-output" class="typewriter"></div>
                         </div>
-                        <div class="reward-bar">
-                            <label>Spam Penalty</label>
-                            <div class="bar-container">
-                                <div id="penalty-bar" class="bar penalty"></div>
-                            </div>
-                            <span id="penalty-value">0.0</span>
-                        </div>
-                        <div class="reward-bar total">
-                            <label>Total</label>
-                            <div class="bar-container">
-                                <div id="total-bar" class="bar"></div>
-                            </div>
-                            <span id="total-value">0.0</span>
+                        <div class="answer-box">
+                            <span id="train-answer" class="answer-badge"></span>
                         </div>
                     </div>
                 </div>
-            </section>
-        </main>
 
-        <!-- Metrics footer -->
-        <footer class="metrics-footer">
-            <div class="metric">
-                <span class="label">Accuracy</span>
-                <span id="metric-accuracy" class="value">--</span>
+                <!-- Right: Reward Calculation -->
+                <div class="panel reward-panel">
+                    <div class="panel-header">
+                        <h2>Graph-Based Reward</h2>
+                    </div>
+                    <div class="reward-content">
+                        <div class="reward-step" id="reward-step-1">
+                            <span class="step-label">Correct Answer?</span>
+                            <span class="step-value" id="reward-correct">--</span>
+                        </div>
+                        <div class="reward-step" id="reward-step-2">
+                            <span class="step-label">Path Coverage</span>
+                            <span class="step-value" id="reward-path">--</span>
+                        </div>
+                        <div class="reward-step total" id="reward-step-3">
+                            <span class="step-label">Total Reward</span>
+                            <span class="step-value" id="reward-total">--</span>
+                        </div>
+                        <div class="reward-decision" id="reward-decision"></div>
+                    </div>
+                </div>
             </div>
-            <div class="metric">
-                <span class="label">Avg Coverage</span>
-                <span id="metric-coverage" class="value">--</span>
+
+            <!-- Bottom: Progress -->
+            <div class="training-progress">
+                <div class="progress-section">
+                    <canvas id="progress-canvas"></canvas>
+                </div>
+                <div class="stats-section">
+                    <div class="stat">
+                        <span class="stat-value" id="current-accuracy">0%</span>
+                        <span class="stat-label">Accuracy</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="examples-seen">0</span>
+                        <span class="stat-label">Steps</span>
+                    </div>
+                </div>
+                <div class="controls-section">
+                    <button id="start-training-btn" class="action-btn">▶ Start</button>
+                    <button id="skip-btn" class="action-btn secondary">⏭ Skip to End</button>
+                </div>
             </div>
-            <div class="metric">
-                <span class="label">Avg Reward</span>
-                <span id="metric-reward" class="value">--</span>
+        </div>
+
+        <!-- ========== INFERENCE VIEW ========== -->
+        <div id="inference-view" class="view">
+            <div class="inference-banner">
+                <strong>Testing RSFT Model (75% accuracy)</strong> — Graph is NOT available. Model must reason from learned patterns.
             </div>
-        </footer>
+
+            <div class="inference-main">
+                <!-- Left: Question -->
+                <div class="panel question-panel">
+                    <div class="panel-header">
+                        <h2>Test Question</h2>
+                        <span id="test-num">0 / 20</span>
+                    </div>
+                    <div class="question-content">
+                        <p id="test-question">Click "Run Test" to evaluate the trained model</p>
+                        <div id="test-options" class="options-list"></div>
+                    </div>
+                </div>
+
+                <!-- Center: Model Output -->
+                <div class="panel output-panel">
+                    <div class="panel-header">
+                        <h2>Model Reasoning</h2>
+                    </div>
+                    <div class="output-content">
+                        <div id="test-trace" class="typewriter"></div>
+                        <div id="test-answer" class="answer-display"></div>
+                    </div>
+                </div>
+
+                <!-- Right: No Graph -->
+                <div class="panel no-graph-panel">
+                    <div class="panel-header">
+                        <h2>Knowledge Graph</h2>
+                        <span class="status-badge inactive">REMOVED</span>
+                    </div>
+                    <div class="no-graph-content">
+                        <div class="no-graph-icon">🚫</div>
+                        <p>Not available at inference</p>
+                        <p class="subtext">This is the key insight: train WITH graph, test WITHOUT</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom: Results -->
+            <div class="inference-progress">
+                <div class="results-display">
+                    <div class="result-item">
+                        <span class="result-value correct" id="correct-count">0</span>
+                        <span class="result-label">Correct</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-value wrong" id="wrong-count">0</span>
+                        <span class="result-label">Wrong</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-value" id="test-accuracy">--%</span>
+                        <span class="result-label">Accuracy</span>
+                    </div>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="test-progress-bar" class="progress-bar"></div>
+                </div>
+                <button id="run-test-btn" class="action-btn">▶ Run Test</button>
+                <button id="skip-test-btn" class="action-btn secondary">⏭ Skip</button>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>
