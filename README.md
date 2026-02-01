@@ -25,7 +25,7 @@ This project implements a complete pipeline for training small language models t
 | SFT (200 iters) | 30% | Learns TRACE + ANSWER format |
 | RSFT (eval distribution) | **75%** | Distribution-matched training |
 
-See [docs/training-status.md](docs/training-status.md) for details on model storage and continuing training.
+See [documentation/training-status.md](documentation/training-status.md) for details on model storage and continuing training.
 
 ## Demo
 
@@ -79,7 +79,7 @@ multi-hop-reasoning/
 ├── spec/              # Specifications
 │   ├── schemas.md     # Data schemas
 │   └── reward.md      # Reward function spec
-├── docs/              # Documentation
+├── documentation/              # Documentation
 ├── tests/             # Test suite
 └── video/             # Video production assets
 ```
@@ -110,13 +110,13 @@ See [spec/reward.md](spec/reward.md) for full specification.
 
 ## Documentation
 
-- [docs/eli5.md](docs/eli5.md) - ELI5 explanation of the project and key findings
-- [docs/training-status.md](docs/training-status.md) - Current results, model storage, continuing training
+- [documentation/eli5.md](documentation/eli5.md) - ELI5 explanation of the project and key findings
+- [documentation/training-status.md](documentation/training-status.md) - Current results, model storage, continuing training
 - [spec/schemas.md](spec/schemas.md) - Data file schemas (kg.json, train.jsonl, episodes.jsonl, etc.)
 - [spec/reward.md](spec/reward.md) - Reward function specification
-- [docs/process.md](docs/process.md) - Development process and TDD guidelines
-- [docs/tools.md](docs/tools.md) - Development tools
-- [docs/ai_agent_instructions.md](docs/ai_agent_instructions.md) - AI coding agent guidelines
+- [documentation/process.md](documentation/process.md) - Development process and TDD guidelines
+- [documentation/tools.md](documentation/tools.md) - Development tools
+- [documentation/ai_agent_instructions.md](documentation/ai_agent_instructions.md) - AI coding agent guidelines
 
 ## Requirements
 
