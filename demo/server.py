@@ -152,7 +152,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
 
             # Run inference
             from core.infer import run_inference
-            from core.reward import compute_reward, parse_response
+            from core.reward import compute_reward, parse_completion
 
             completion = run_inference(
                 state["model"],
@@ -163,7 +163,8 @@ class DemoHandler(SimpleHTTPRequestHandler):
             )
 
             # Parse and score
-            parsed = parse_response(completion)
+            valid, trace, answer = parse_completion(completion)
+            parsed = {"valid": valid, "trace": trace, "answer": answer}
 
             # Get path entities from question if available
             path_entities = data.get("path_entities", [])
