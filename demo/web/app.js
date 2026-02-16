@@ -639,11 +639,11 @@ async function handleAskModel() {
         }
 
         // Typewriter effect for trace
-        const trace = data.parsed?.trace_text || data.completion || 'No response';
+        const trace = data.parsed?.trace || data.completion || 'No response';
         await typewriterTryIt(el.tryitTrace, trace, 8);
 
         // Show answer
-        const answer = data.parsed?.answer_text || data.parsed?.answer || '';
+        const answer = data.parsed?.answer || '';
         if (answer) {
             el.tryitAnswer.textContent = answer;
         }
