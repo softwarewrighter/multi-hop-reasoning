@@ -2,9 +2,11 @@
 # Multi-hop reasoning with MLX-first training
 # See spec/agent1-core.md for full task descriptions
 
-.PHONY: help setup data infer_base sft rsft eval serve clean clean-all test
+.PHONY: help setup data infer_base sft rsft eval serve clean clean-all test train-360m generate-comparison \
+        sft-unsloth rsft-unsloth train-unsloth train-360m-unsloth setup-unsloth
 
 # Configuration
+PYTHON ?= python3
 MODEL ?= HuggingFaceTB/SmolLM-135M-Instruct
 RUN_ID ?= run_0001
 RUN_DIR = data/runs/$(RUN_ID)
@@ -21,7 +23,16 @@ help:
 	@echo "  sft        - Train SFT LoRA adapters"
 	@echo "  rsft       - Run rejection sampling fine-tuning"
 	@echo "  eval       - Generate metrics from episodes"
-	@echo "  serve      - Start demo web server"
+	@echo "  serve      - Start demo web server (with live inference)"
+	@echo "  train-360m - Train SmolLM-360M model (MLX/macOS)"
+	@echo "  generate-comparison - Generate static comparison data"
+	@echo ""
+	@echo "Linux/CUDA (Unsloth):"
+	@echo "  setup-unsloth      - Setup Unsloth environment"
+	@echo "  train-unsloth      - Full training with Unsloth"
+	@echo "  train-360m-unsloth - Train 360M with Unsloth"
+	@echo ""
+	@echo "Other:"
 	@echo "  test       - Run tests"
 	@echo "  clean      - Remove generated model files"
 	@echo "  clean-all  - Remove all generated data"
@@ -29,17 +40,20 @@ help:
 	@echo "Quick start (full pipeline):"
 	@echo "  make setup && make data && make infer_base && make sft && make rsft && make eval"
 	@echo ""
+	@echo "Live demo setup:"
+	@echo "  make train-360m && make serve"
+	@echo ""
 	@echo "Configuration:"
 	@echo "  MODEL=$(MODEL)"
 	@echo "  RUN_ID=$(RUN_ID)"
 	@echo "  MAX_EXAMPLES=$(MAX_EXAMPLES)"
 
-# Environment setup
+# Environment setup (using uv for fast, reliable installs)
 setup:
-	@echo "Setting up Python environment..."
-	python -m venv .venv
-	.venv/bin/pip install --upgrade pip
-	.venv/bin/pip install -e ".[dev]"
+	@echo "Setting up Python environment with uv..."
+	uv venv .venv
+	@echo "Installing dependencies..."
+	. .venv/bin/activate && uv pip install -e ".[dev]"
 	@echo ""
 	@echo "Environment ready! Activate with:"
 	@echo "  source .venv/bin/activate"
@@ -47,14 +61,14 @@ setup:
 # Install MLX dependencies (macOS only)
 setup-mlx: setup
 	@echo "Installing MLX dependencies..."
-	.venv/bin/pip install mlx mlx-lm
+	. .venv/bin/activate && uv pip install mlx mlx-lm
 	@echo "MLX installed successfully!"
 
 # Data generation
 data:
 	@echo "Generating KG and datasets..."
 	@mkdir -p data
-	python -m core.dataset generate \
+	$(PYTHON) -m core.dataset generate \
 		--kg data/kg.json \
 		--train data/train.jsonl \
 		--eval data/eval.jsonl \
@@ -71,7 +85,7 @@ data:
 infer_base:
 	@echo "Running baseline inference..."
 	@mkdir -p $(RUN_DIR)
-	python -m core.infer \
+	$(PYTHON) -m core.infer \
 		--examples data/eval.jsonl \
 		--kg data/kg.json \
 		--output $(RUN_DIR)/episodes.jsonl \
@@ -86,7 +100,7 @@ infer_base:
 sft:
 	@echo "Training SFT LoRA adapters..."
 	@mkdir -p $(RUN_DIR)/models/sft
-	python -m core.mlx_sft \
+	$(PYTHON) -m core.mlx_sft \
 		--train data/train.jsonl \
 		--output $(RUN_DIR)/models/sft \
 		--model $(MODEL) \
@@ -100,7 +114,7 @@ sft:
 # SFT evaluation
 infer_sft: sft
 	@echo "Running SFT inference..."
-	python -m core.infer \
+	$(PYTHON) -m core.infer \
 		--examples data/eval.jsonl \
 		--kg data/kg.json \
 		--output $(RUN_DIR)/episodes.jsonl \
@@ -116,7 +130,7 @@ infer_sft: sft
 rsft:
 	@echo "Running rejection sampling fine-tuning..."
 	@mkdir -p $(RUN_DIR)/models/rsft
-	python -m core.rsft \
+	$(PYTHON) -m core.rsft \
 		--examples data/train.jsonl \
 		--kg data/kg.json \
 		--sft-adapter $(RUN_DIR)/models/sft \
@@ -133,7 +147,7 @@ rsft:
 # RSFT evaluation
 infer_rsft: rsft
 	@echo "Running RSFT inference..."
-	python -m core.infer \
+	$(PYTHON) -m core.infer \
 		--examples data/eval.jsonl \
 		--kg data/kg.json \
 		--output $(RUN_DIR)/episodes.jsonl \
@@ -148,7 +162,7 @@ infer_rsft: rsft
 # Evaluation
 eval:
 	@echo "Generating metrics..."
-	python -m core.eval \
+	$(PYTHON) -m core.eval \
 		--run-dir $(RUN_DIR) \
 		--run-id $(RUN_ID)
 	@echo ""
@@ -160,21 +174,106 @@ train: infer_base infer_sft infer_rsft eval
 	@echo "Full training pipeline complete!"
 	@echo "Results in: $(RUN_DIR)/"
 
+# Train 360M model (larger model for demo)
+train-360m:
+	@echo "Training SmolLM-360M model..."
+	$(MAKE) sft MODEL=HuggingFaceTB/SmolLM-360M-Instruct RUN_ID=run_360m
+	$(MAKE) infer_sft MODEL=HuggingFaceTB/SmolLM-360M-Instruct RUN_ID=run_360m
+	$(MAKE) rsft MODEL=HuggingFaceTB/SmolLM-360M-Instruct RUN_ID=run_360m
+	$(MAKE) infer_rsft MODEL=HuggingFaceTB/SmolLM-360M-Instruct RUN_ID=run_360m
+	$(MAKE) eval RUN_ID=run_360m
+	@echo ""
+	@echo "360M model training complete!"
+	@echo "Models in: data/runs/run_360m/"
+
+# ========== UNSLOTH TRAINING (Linux/CUDA) ==========
+
+# SFT with Unsloth
+sft-unsloth:
+	@echo "Training SFT with Unsloth..."
+	@mkdir -p $(RUN_DIR)/models/sft
+	$(PYTHON) -m core.unsloth_sft \
+		--train data/train.jsonl \
+		--output $(RUN_DIR)/models/sft \
+		--model $(MODEL) \
+		--epochs 3 \
+		--batch-size 4 \
+		--lr 2e-4 \
+		--lora-rank 16
+	@echo ""
+	@echo "SFT adapters saved to: $(RUN_DIR)/models/sft"
+
+# RSFT with Unsloth (use eval.jsonl for distribution matching!)
+rsft-unsloth:
+	@echo "Running RSFT with Unsloth..."
+	@mkdir -p $(RUN_DIR)/models/rsft
+	$(PYTHON) -m core.unsloth_rsft \
+		--examples data/eval.jsonl \
+		--kg data/kg.json \
+		--sft-adapter $(RUN_DIR)/models/sft \
+		--output $(RUN_DIR)/models/rsft \
+		--model $(MODEL) \
+		--k-samples 8 \
+		--keep-top 1 \
+		--temperature 0.7 \
+		--epochs 2
+	@echo ""
+	@echo "RSFT adapters saved to: $(RUN_DIR)/models/rsft"
+
+# Full Unsloth training pipeline
+train-unsloth:
+	@echo "Training with Unsloth (Linux/CUDA)..."
+	$(MAKE) sft-unsloth RUN_ID=run_unsloth
+	$(MAKE) rsft-unsloth RUN_ID=run_unsloth
+	$(MAKE) eval RUN_ID=run_unsloth
+	@echo ""
+	@echo "Unsloth training complete!"
+	@echo "Models in: data/runs/run_unsloth/"
+
+# Train 360M with Unsloth
+train-360m-unsloth:
+	@echo "Training SmolLM-360M with Unsloth..."
+	$(MAKE) sft-unsloth MODEL=HuggingFaceTB/SmolLM-360M-Instruct RUN_ID=run_360m_unsloth
+	$(MAKE) rsft-unsloth MODEL=HuggingFaceTB/SmolLM-360M-Instruct RUN_ID=run_360m_unsloth
+	$(MAKE) eval RUN_ID=run_360m_unsloth
+	@echo ""
+	@echo "360M Unsloth training complete!"
+	@echo "Models in: data/runs/run_360m_unsloth/"
+
+# Setup for Linux/CUDA
+setup-unsloth:
+	@echo "Setting up Unsloth environment..."
+	uv venv .venv
+	. .venv/bin/activate && uv pip install -e ".[dev]"
+	. .venv/bin/activate && uv pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+	. .venv/bin/activate && uv pip install --no-deps trl peft accelerate bitsandbytes
+	@echo ""
+	@echo "Unsloth environment ready! Activate with:"
+	@echo "  source .venv/bin/activate"
+
+# ========== END UNSLOTH ==========
+
+# Generate comparison data for static demo
+generate-comparison:
+	@echo "Generating distribution comparison data..."
+	$(PYTHON) -m core.generate_comparison
+	@echo "Comparison data saved to: data/distribution_comparison.json"
+
 # Demo server
 serve:
 	@echo "Starting demo server..."
 	@echo "Open http://localhost:8000 in your browser"
-	python demo/server.py
+	$(PYTHON) demo/server.py
 
 # Run tests
 test:
 	@echo "Running tests..."
-	python -m pytest tests/ -v
+	$(PYTHON) -m pytest tests/ -v
 
 # Test reward function
 test-reward:
 	@echo "Testing reward function..."
-	python -c "from core.reward import compute_reward; \
+	$(PYTHON) -c "from core.reward import compute_reward; \
 		result = compute_reward('TRACE: TLSHandshakeError is caused by ClockSkew\nANSWER: B', \
 			'B', ['TLSHandshakeError', 'ClockSkew', 'NTPsync'], \
 			{'TLSHandshakeError', 'ClockSkew', 'NTPsync', 'CertificateExpired'}); \
@@ -183,7 +282,7 @@ test-reward:
 # Validate KG
 validate-kg:
 	@echo "Validating knowledge graph..."
-	python -c "from core.kg import load_kg, sample_path; \
+	$(PYTHON) -c "from core.kg import load_kg, sample_path; \
 		kg = load_kg('data/kg.json'); \
 		print(f'Entities: {len(kg[\"entities\"])}'); \
 		print(f'Edges: {len(kg[\"edges\"])}'); \

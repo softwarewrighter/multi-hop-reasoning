@@ -14,6 +14,7 @@
             <div class="mode-tabs">
                 <button id="training-tab" class="tab active">Training</button>
                 <button id="inference-tab" class="tab">Inference</button>
+                <button id="distribution-tab" class="tab">Distribution</button>
             </div>
             <div class="header-controls">
                 <label>Speed:</label>
@@ -190,6 +191,108 @@
                 </div>
                 <button id="run-test-btn" class="action-btn">▶ Run Test</button>
                 <button id="skip-test-btn" class="action-btn secondary">⏭ Skip</button>
+            </div>
+        </div>
+
+        <!-- ========== DISTRIBUTION VIEW ========== -->
+        <div id="distribution-view" class="view">
+            <div class="distribution-header">
+                <h2>🎯 The Key Insight: Distribution Matters</h2>
+                <p>Training on easy examples makes the model <em>worse</em> at hard problems</p>
+            </div>
+
+            <div class="distribution-main">
+                <!-- Comparison Table -->
+                <div class="panel comparison-panel">
+                    <div class="panel-header">
+                        <h2>Training Approach Comparison</h2>
+                    </div>
+                    <div class="comparison-content">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Approach</th>
+                                    <th>Training Data</th>
+                                    <th>Eval Accuracy</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="row-sft">
+                                    <td><span class="approach-badge sft">SFT</span></td>
+                                    <td>Easy (1-3 hop)</td>
+                                    <td><span class="accuracy-value">30%</span></td>
+                                </tr>
+                                <tr class="row-rsft-easy">
+                                    <td><span class="approach-badge rsft-easy">RSFT Easy</span></td>
+                                    <td>Easy (1-3 hop)</td>
+                                    <td><span class="accuracy-value worse">20%</span> <span class="arrow-down">↓</span></td>
+                                </tr>
+                                <tr class="row-rsft-hard highlight-row">
+                                    <td><span class="approach-badge rsft-hard">RSFT Hard</span></td>
+                                    <td>Hard (4-5 hop)</td>
+                                    <td><span class="accuracy-value best">75%</span> <span class="star">★</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="insight-box">
+                            <div class="insight-icon">💡</div>
+                            <div class="insight-text">
+                                <strong>Counter-intuitive finding:</strong> RSFT on easy examples (20%) performed
+                                <em>worse</em> than SFT baseline (30%), while RSFT on hard examples jumped to 75%.
+                                <br><br>
+                                <strong>Why?</strong> The model learns to match its training distribution.
+                                When trained on easy 1-3 hop chains, it fails to generalize to 4-5 hop eval questions.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Explanation -->
+                <div class="panel explanation-panel">
+                    <div class="panel-header">
+                        <h2>Distribution Mismatch</h2>
+                    </div>
+                    <div class="explanation-content">
+                        <div class="distribution-visual">
+                            <div class="dist-row">
+                                <span class="dist-label">Training (Easy)</span>
+                                <div class="dist-bar easy-bar">
+                                    <span>1-3 hops</span>
+                                </div>
+                            </div>
+                            <div class="dist-row">
+                                <span class="dist-label">Eval (Hard)</span>
+                                <div class="dist-bar hard-bar">
+                                    <span>4-5 hops</span>
+                                </div>
+                            </div>
+                            <div class="mismatch-indicator">
+                                <span class="mismatch-x">✗</span>
+                                <span>Distribution Mismatch</span>
+                            </div>
+                        </div>
+
+                        <div class="distribution-visual correct">
+                            <div class="dist-row">
+                                <span class="dist-label">Training (Hard)</span>
+                                <div class="dist-bar hard-bar">
+                                    <span>4-5 hops</span>
+                                </div>
+                            </div>
+                            <div class="dist-row">
+                                <span class="dist-label">Eval (Hard)</span>
+                                <div class="dist-bar hard-bar">
+                                    <span>4-5 hops</span>
+                                </div>
+                            </div>
+                            <div class="match-indicator">
+                                <span class="match-check">✓</span>
+                                <span>Distribution Match → 75% Accuracy</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

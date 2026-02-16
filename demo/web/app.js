@@ -18,14 +18,20 @@ const state = {
     testCorrect: 0,
     testWrong: 0,
     speed: 1,
-    currentPhase: 'sft' // 'sft' or 'rsft'
+    currentPhase: 'sft', // 'sft' or 'rsft'
+    isLiveMode: false,  // Whether running against local server
+    comparisonData: null
 };
 
 const el = {
     trainingTab: document.getElementById('training-tab'),
     inferenceTab: document.getElementById('inference-tab'),
+    tryitTab: document.getElementById('tryit-tab'),
+    distributionTab: document.getElementById('distribution-tab'),
     trainingView: document.getElementById('training-view'),
     inferenceView: document.getElementById('inference-view'),
+    tryitView: document.getElementById('tryit-view'),
+    distributionView: document.getElementById('distribution-view'),
     speedSlider: document.getElementById('speed-slider'),
     speedLabel: document.getElementById('speed-label'),
     // Training
@@ -57,11 +63,33 @@ const el = {
     testAccuracy: document.getElementById('test-accuracy'),
     testProgressBar: document.getElementById('test-progress-bar'),
     runTestBtn: document.getElementById('run-test-btn'),
-    skipTestBtn: document.getElementById('skip-test-btn')
+    skipTestBtn: document.getElementById('skip-test-btn'),
+    // Try It
+    tryitNotice: document.getElementById('tryit-notice'),
+    tryitQuestion: document.getElementById('tryit-question'),
+    tryitAskBtn: document.getElementById('tryit-ask-btn'),
+    tryitTrace: document.getElementById('tryit-trace'),
+    tryitAnswer: document.getElementById('tryit-answer'),
+    tryitCoverage: document.getElementById('tryit-coverage'),
+    tryitModelInfo: document.getElementById('tryit-model-info'),
+    // Distribution
+    comparisonExamplesPanel: document.getElementById('comparison-examples-panel'),
+    comparisonExamples: document.getElementById('comparison-examples')
 };
 
 // ===== INIT =====
 async function init() {
+    // Check if we're running against local server (live mode)
+    try {
+        const statusRes = await fetch('/api/model-status');
+        if (statusRes.ok) {
+            state.isLiveMode = true;
+            el.tryitNotice.classList.add('hidden');
+        }
+    } catch (e) {
+        state.isLiveMode = false;
+    }
+
     try {
         const [kgRes, epRes] = await Promise.all([
             fetch('/api/kg'),
@@ -76,23 +104,60 @@ async function init() {
         console.error('Failed to load:', e);
     }
 
+    // Try to load comparison data
+    try {
+        const compRes = await fetch('/api/comparison');
+        if (compRes.ok) {
+            state.comparisonData = await compRes.json();
+            if (!state.comparisonData.error) {
+                renderComparisonExamples();
+            }
+        }
+    } catch (e) {
+        console.log('Comparison data not available');
+    }
+
     el.trainingTab.addEventListener('click', () => switchView('training'));
     el.inferenceTab.addEventListener('click', () => switchView('inference'));
+    el.tryitTab.addEventListener('click', () => switchView('tryit'));
+    el.distributionTab.addEventListener('click', () => switchView('distribution'));
     el.startTrainingBtn.addEventListener('click', toggleTraining);
     el.skipBtn.addEventListener('click', skipToEnd);
     el.runTestBtn.addEventListener('click', toggleTest);
     el.skipTestBtn.addEventListener('click', skipTest);
     el.speedSlider.addEventListener('input', updateSpeed);
 
+    // Try It tab
+    el.tryitAskBtn.addEventListener('click', handleAskModel);
+    document.querySelectorAll('.example-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            el.tryitQuestion.value = btn.dataset.question;
+        });
+    });
+
     updateSpeed();
     drawEmptyProgress();
 }
 
 function switchView(view) {
-    el.trainingTab.classList.toggle('active', view === 'training');
-    el.inferenceTab.classList.toggle('active', view === 'inference');
-    el.trainingView.classList.toggle('active', view === 'training');
-    el.inferenceView.classList.toggle('active', view === 'inference');
+    const views = ['training', 'inference', 'tryit', 'distribution'];
+    const tabs = {
+        training: el.trainingTab,
+        inference: el.inferenceTab,
+        tryit: el.tryitTab,
+        distribution: el.distributionTab
+    };
+    const panels = {
+        training: el.trainingView,
+        inference: el.inferenceView,
+        tryit: el.tryitView,
+        distribution: el.distributionView
+    };
+
+    views.forEach(v => {
+        tabs[v].classList.toggle('active', v === view);
+        panels[v].classList.toggle('active', v === view);
+    });
 }
 
 function updateSpeed() {
@@ -525,6 +590,114 @@ async function typewriter(el, text, delay) {
 
 function sleep(ms) {
     return new Promise(r => setTimeout(r, ms));
+}
+
+// ===== TRY IT =====
+async function handleAskModel() {
+    const question = el.tryitQuestion.value.trim();
+    if (!question) {
+        el.tryitTrace.textContent = 'Please enter a question.';
+        return;
+    }
+
+    // Check if live mode is available
+    if (!state.isLiveMode) {
+        el.tryitNotice.classList.remove('hidden');
+        el.tryitNotice.classList.add('error');
+        el.tryitNotice.innerHTML = '<span class="notice-icon">⚠️</span><span>Server not available. Run <code>python demo/server.py</code> locally.</span>';
+        return;
+    }
+
+    // Show loading state
+    el.tryitAskBtn.classList.add('loading');
+    el.tryitAskBtn.textContent = '⏳ Thinking...';
+    el.tryitTrace.innerHTML = '<span class="cursor">|</span>';
+    el.tryitAnswer.textContent = '';
+    el.tryitCoverage.textContent = '--%';
+
+    try {
+        const response = await fetch('/api/infer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            el.tryitTrace.textContent = `Error: ${data.error}`;
+            if (data.hint) {
+                el.tryitTrace.textContent += `\n\nHint: ${data.hint}`;
+            }
+            return;
+        }
+
+        // Show model info
+        if (data.model_info?.adapter) {
+            const adapterName = data.model_info.adapter.split('/').slice(-2).join('/');
+            el.tryitModelInfo.textContent = adapterName;
+        }
+
+        // Typewriter effect for trace
+        const trace = data.parsed?.trace_text || data.completion || 'No response';
+        await typewriterTryIt(el.tryitTrace, trace, 8);
+
+        // Show answer
+        const answer = data.parsed?.answer_text || data.parsed?.answer || '';
+        if (answer) {
+            el.tryitAnswer.textContent = answer;
+        }
+
+        // Show metrics
+        if (data.reward) {
+            el.tryitCoverage.textContent = `${Math.round(data.reward.path_coverage * 100)}%`;
+        }
+
+    } catch (e) {
+        el.tryitTrace.textContent = `Failed to connect: ${e.message}`;
+    } finally {
+        el.tryitAskBtn.classList.remove('loading');
+        el.tryitAskBtn.textContent = '🔮 Ask Model';
+    }
+}
+
+async function typewriterTryIt(element, text, charDelay) {
+    element.innerHTML = '';
+    for (let i = 0; i < text.length; i++) {
+        element.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
+        await sleep(charDelay);
+    }
+    element.innerHTML = text;
+}
+
+// ===== DISTRIBUTION =====
+function renderComparisonExamples() {
+    if (!state.comparisonData?.examples) return;
+
+    el.comparisonExamplesPanel.style.display = 'block';
+    el.comparisonExamples.innerHTML = '';
+
+    // Show first 3 examples
+    const examples = state.comparisonData.examples.slice(0, 3);
+
+    examples.forEach(ex => {
+        const card = document.createElement('div');
+        card.className = 'example-card';
+        card.innerHTML = `
+            <div class="example-card-header">
+                <span class="approach-badge ${ex.model}">${ex.model.toUpperCase()}</span>
+                <span class="${ex.correct ? 'accuracy-value best' : 'accuracy-value worse'}">${ex.correct ? '✓' : '✗'}</span>
+            </div>
+            <div class="example-card-body">${escapeHtml(ex.trace || ex.completion || 'No trace')}</div>
+        `;
+        el.comparisonExamples.appendChild(card);
+    });
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 init();

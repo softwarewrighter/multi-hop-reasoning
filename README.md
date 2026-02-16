@@ -33,7 +33,8 @@ See [documentation/training-status.md](documentation/training-status.md) for det
 
 Or run locally:
 ```bash
-python demo/server.py
+source .venv/bin/activate
+python3 demo/server.py
 # Open http://localhost:3519
 ```
 
@@ -49,13 +50,27 @@ The demo visualizes training (with knowledge graph scoring) and inference (witho
 
 ```bash
 # Setup environment (macOS with Apple Silicon)
+# Requires: uv (https://docs.astral.sh/uv/)
 make setup-mlx
+source .venv/bin/activate
 
 # Generate data
 make data
 
 # Run full training pipeline
 make train
+```
+
+### Manual Setup (without Make)
+
+```bash
+# Create and activate virtual environment
+uv venv .venv
+source .venv/bin/activate
+
+# Install dependencies
+uv pip install -e ".[dev]"
+uv pip install mlx mlx-lm  # macOS only
 ```
 
 Or run steps individually:
@@ -130,6 +145,7 @@ See [spec/reward.md](spec/reward.md) for full specification.
 ## Requirements
 
 - Python 3.10+
+- [uv](https://docs.astral.sh/uv/) - Fast Python package manager
 - Apple Silicon Mac (for MLX) or CUDA GPU (for Unsloth/PyTorch)
 - Dependencies: mlx, mlx-lm, transformers, numpy, tqdm
 

@@ -2,12 +2,14 @@
 Model inference and episode logging.
 
 Runs inference on examples and logs results to episodes.jsonl.
+Supports both MLX (macOS) and PyTorch/Unsloth (Linux/CUDA).
 """
 
 import json
 import argparse
 from pathlib import Path
 from typing import Dict, Any, List, Iterator, Optional, Tuple
+import os
 
 from .reward import compute_reward
 from .kg import load_kg, get_entity_vocab
@@ -15,6 +17,30 @@ from .kg import load_kg, get_entity_vocab
 
 # Default model
 DEFAULT_MODEL = "HuggingFaceTB/SmolLM-135M-Instruct"
+
+# Backend detection
+def get_backend() -> str:
+    """Detect available backend: 'mlx' or 'torch'."""
+    # Check for explicit override
+    backend = os.environ.get("INFERENCE_BACKEND", "").lower()
+    if backend in ("mlx", "torch"):
+        return backend
+
+    # Try MLX first (macOS)
+    try:
+        import mlx.core
+        return "mlx"
+    except ImportError:
+        pass
+
+    # Fall back to PyTorch
+    try:
+        import torch
+        return "torch"
+    except ImportError:
+        pass
+
+    raise ImportError("No inference backend available. Install mlx-lm (macOS) or transformers (Linux).")
 
 
 def load_examples(path: Path) -> Iterator[Dict[str, Any]]:
@@ -53,7 +79,110 @@ def load_mlx_model(
     return model, tokenizer
 
 
-def run_inference(
+def load_torch_model(
+    model_path: str,
+    adapter_path: Optional[Path] = None
+) -> Tuple[Any, Any]:
+    """
+    Load PyTorch/Transformers model and tokenizer.
+
+    Supports:
+    - Base HuggingFace models
+    - Unsloth-trained adapters
+    - PEFT/LoRA adapters
+
+    Args:
+        model_path: HuggingFace model ID or local path
+        adapter_path: Optional path to LoRA adapter weights
+
+    Returns:
+        (model, tokenizer) tuple
+    """
+    try:
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+        import torch
+    except ImportError:
+        raise ImportError("transformers and torch required. Install with: pip install transformers torch")
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"  Using device: {device}")
+
+    # Check if adapter_path is a merged model or LoRA adapter
+    if adapter_path and adapter_path.exists():
+        merged_path = adapter_path / "merged"
+        if merged_path.exists():
+            # Load merged model directly
+            print(f"  Loading merged model from {merged_path}")
+            model = AutoModelForCausalLM.from_pretrained(
+                merged_path,
+                torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+                device_map="auto" if device == "cuda" else None,
+            )
+            tokenizer = AutoTokenizer.from_pretrained(merged_path)
+        elif (adapter_path / "adapter_config.json").exists():
+            # Load base model + PEFT adapter
+            print(f"  Loading base model + adapter from {adapter_path}")
+            from peft import PeftModel
+            base_model = AutoModelForCausalLM.from_pretrained(
+                model_path,
+                torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+                device_map="auto" if device == "cuda" else None,
+            )
+            model = PeftModel.from_pretrained(base_model, adapter_path)
+            tokenizer = AutoTokenizer.from_pretrained(adapter_path)
+        else:
+            # Assume it's a full model
+            print(f"  Loading model from {adapter_path}")
+            model = AutoModelForCausalLM.from_pretrained(
+                adapter_path,
+                torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+                device_map="auto" if device == "cuda" else None,
+            )
+            tokenizer = AutoTokenizer.from_pretrained(adapter_path)
+    else:
+        # Load base model
+        print(f"  Loading base model: {model_path}")
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path,
+            torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+            device_map="auto" if device == "cuda" else None,
+        )
+        tokenizer = AutoTokenizer.from_pretrained(model_path)
+
+    if device == "cpu":
+        model = model.to(device)
+
+    model.eval()
+
+    # Ensure pad token
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    return model, tokenizer
+
+
+def load_model(
+    model_path: str,
+    adapter_path: Optional[Path] = None,
+    backend: Optional[str] = None
+) -> Tuple[Any, Any, str]:
+    """
+    Load model using appropriate backend.
+
+    Returns:
+        (model, tokenizer, backend_used) tuple
+    """
+    backend = backend or get_backend()
+
+    if backend == "mlx":
+        model, tokenizer = load_mlx_model(model_path, adapter_path)
+    else:
+        model, tokenizer = load_torch_model(model_path, adapter_path)
+
+    return model, tokenizer, backend
+
+
+def run_inference_mlx(
     model,
     tokenizer,
     prompt: str,
@@ -61,20 +190,7 @@ def run_inference(
     temperature: float = 0.0,
     verbose: bool = False
 ) -> str:
-    """
-    Run inference on a single prompt using MLX-LM.
-
-    Args:
-        model: MLX model
-        tokenizer: Tokenizer
-        prompt: Input prompt
-        max_tokens: Maximum tokens to generate
-        temperature: Sampling temperature (0 = greedy)
-        verbose: Print generation progress
-
-    Returns:
-        Generated completion text
-    """
+    """Run inference using MLX-LM (macOS)."""
     try:
         from mlx_lm import generate
         from mlx_lm.sample_utils import make_sampler
@@ -91,7 +207,6 @@ def run_inference(
                 add_generation_prompt=True
             )
         except Exception:
-            # Fall back to raw prompt if chat template fails
             formatted_prompt = prompt
     else:
         formatted_prompt = prompt
@@ -110,6 +225,97 @@ def run_inference(
     )
 
     return completion
+
+
+def run_inference_torch(
+    model,
+    tokenizer,
+    prompt: str,
+    max_tokens: int = 256,
+    temperature: float = 0.0,
+    verbose: bool = False
+) -> str:
+    """Run inference using PyTorch/Transformers (Linux/CUDA)."""
+    import torch
+
+    # Format as chat if the model supports it
+    if hasattr(tokenizer, 'apply_chat_template'):
+        messages = [{"role": "user", "content": prompt}]
+        try:
+            formatted_prompt = tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True
+            )
+        except Exception:
+            formatted_prompt = prompt
+    else:
+        formatted_prompt = prompt
+
+    inputs = tokenizer(formatted_prompt, return_tensors="pt")
+    inputs = {k: v.to(model.device) for k, v in inputs.items()}
+
+    with torch.no_grad():
+        if temperature == 0.0:
+            # Greedy decoding
+            outputs = model.generate(
+                **inputs,
+                max_new_tokens=max_tokens,
+                do_sample=False,
+                pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id,
+            )
+        else:
+            # Sampling
+            outputs = model.generate(
+                **inputs,
+                max_new_tokens=max_tokens,
+                do_sample=True,
+                temperature=temperature,
+                top_p=0.9,
+                pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id,
+            )
+
+    # Decode only the new tokens
+    completion = tokenizer.decode(
+        outputs[0][inputs["input_ids"].shape[1]:],
+        skip_special_tokens=True
+    )
+
+    return completion
+
+
+def run_inference(
+    model,
+    tokenizer,
+    prompt: str,
+    max_tokens: int = 256,
+    temperature: float = 0.0,
+    verbose: bool = False,
+    backend: Optional[str] = None
+) -> str:
+    """
+    Run inference on a single prompt.
+
+    Auto-detects backend (MLX on macOS, PyTorch on Linux) or use explicit backend.
+
+    Args:
+        model: Model (MLX or PyTorch)
+        tokenizer: Tokenizer
+        prompt: Input prompt
+        max_tokens: Maximum tokens to generate
+        temperature: Sampling temperature (0 = greedy)
+        verbose: Print generation progress
+        backend: Force 'mlx' or 'torch' backend
+
+    Returns:
+        Generated completion text
+    """
+    backend = backend or get_backend()
+
+    if backend == "mlx":
+        return run_inference_mlx(model, tokenizer, prompt, max_tokens, temperature, verbose)
+    else:
+        return run_inference_torch(model, tokenizer, prompt, max_tokens, temperature, verbose)
 
 
 def run_inference_batch(

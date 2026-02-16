@@ -24,8 +24,10 @@ const state = {
 const el = {
     trainingTab: document.getElementById('training-tab'),
     inferenceTab: document.getElementById('inference-tab'),
+    distributionTab: document.getElementById('distribution-tab'),
     trainingView: document.getElementById('training-view'),
     inferenceView: document.getElementById('inference-view'),
+    distributionView: document.getElementById('distribution-view'),
     speedSlider: document.getElementById('speed-slider'),
     speedLabel: document.getElementById('speed-label'),
     // Training
@@ -78,6 +80,7 @@ async function init() {
 
     el.trainingTab.addEventListener('click', () => switchView('training'));
     el.inferenceTab.addEventListener('click', () => switchView('inference'));
+    el.distributionTab.addEventListener('click', () => switchView('distribution'));
     el.startTrainingBtn.addEventListener('click', toggleTraining);
     el.skipBtn.addEventListener('click', skipToEnd);
     el.runTestBtn.addEventListener('click', toggleTest);
@@ -89,10 +92,22 @@ async function init() {
 }
 
 function switchView(view) {
-    el.trainingTab.classList.toggle('active', view === 'training');
-    el.inferenceTab.classList.toggle('active', view === 'inference');
-    el.trainingView.classList.toggle('active', view === 'training');
-    el.inferenceView.classList.toggle('active', view === 'inference');
+    const views = ['training', 'inference', 'distribution'];
+    const tabs = {
+        training: el.trainingTab,
+        inference: el.inferenceTab,
+        distribution: el.distributionTab
+    };
+    const panels = {
+        training: el.trainingView,
+        inference: el.inferenceView,
+        distribution: el.distributionView
+    };
+
+    views.forEach(v => {
+        tabs[v].classList.toggle('active', v === view);
+        panels[v].classList.toggle('active', v === view);
+    });
 }
 
 function updateSpeed() {
