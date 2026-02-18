@@ -15,15 +15,32 @@ This project implements a complete pipeline for training small language models t
 - **Reward Function**: Correctness + path coverage scoring with anti-spam penalties
 - **SFT**: Supervised Fine-Tuning with LoRA in MLX
 - **RSFT**: Rejection Sampling Fine-Tuning (RL-lite approach)
-- **Demo UI**: Interactive visualization of training progress
+- **Demo UI**: Interactive visualization with live inference and distribution analysis
+- **Cross-Platform**: MLX for macOS, Unsloth for Linux/CUDA
+
+## Key Finding: Distribution Matters
+
+Training on examples that don't match your evaluation distribution can make performance **worse**:
+
+| Approach | Training Data | Eval Accuracy |
+|----------|--------------|---------------|
+| SFT | Easy (1-3 hop) | 30% |
+| RSFT Easy | Easy (1-3 hop) | 20% ↓ |
+| RSFT Hard | Hard (4-5 hop) | **75%** ★ |
+
+RSFT on easy examples performed *worse* than SFT baseline because the model learned to match its training distribution, failing to generalize to harder eval questions.
 
 ## Results
 
-| Phase | Accuracy | Notes |
-|-------|----------|-------|
-| Base (SmolLM-135M) | 0% | No format compliance |
-| SFT (200 iters) | 30% | Learns TRACE + ANSWER format |
-| RSFT (eval distribution) | **75%** | Distribution-matched training |
+### SmolLM-360M Training Results
+
+| Phase | Accuracy | Path Coverage | Notes |
+|-------|----------|---------------|-------|
+| Base | 0% | 0% | No format compliance |
+| SFT (500 iters) | 37% | 32% | Learns TRACE + ANSWER format |
+| RSFT (train distribution) | 27% | 30% | Distribution mismatch hurts! |
+
+The RSFT accuracy dropped because it trained on easy examples (1-3 hop) but was evaluated on hard examples (4-5 hop). This demonstrates the key finding about distribution matching.
 
 See [documentation/training-status.md](documentation/training-status.md) for details on model storage and continuing training.
 
@@ -31,20 +48,40 @@ See [documentation/training-status.md](documentation/training-status.md) for det
 
 **Live Demo:** [https://softwarewrighter.github.io/multi-hop-reasoning/](https://softwarewrighter.github.io/multi-hop-reasoning/)
 
-Or run locally:
+Or run locally with live inference:
 ```bash
 source .venv/bin/activate
+make train-360m  # Train the 360M model (first time only)
 python3 demo/server.py
 # Open http://localhost:3519
 ```
 
-The demo visualizes training (with knowledge graph scoring) and inference (without graph access).
+### Demo Tabs
+
+| Tab | Description |
+|-----|-------------|
+| **Training** | Visualizes SFT→RSFT training with knowledge graph scoring |
+| **Inference** | Shows model reasoning without graph access |
+| **Try It** | Live inference - ask questions and see reasoning traces |
+| **Distribution** | Interactive visualization of the key finding |
 
 **Training View:** Knowledge graph scores model outputs in real-time
 ![Training Demo](images/screenshot-training.png?ts=1769921411000)
 
 **Inference View:** Model reasons without graph access
 ![Inference Demo](images/screenshot-testing.png?ts=1769921411000)
+
+### Try It (Live Inference)
+
+Ask DevOps troubleshooting questions and watch the model reason:
+
+```
+Question: What causes TLSHandshakeError?
+
+TRACE: TLSHandshakeError is caused by ConnectionTimeout,
+and ConnectionTimeout leads to ConnectionRefused,
+and ConnectionRefused is diagnosed by VerifyCert...
+```
 
 ## Quick Start
 
@@ -86,33 +123,39 @@ make eval        # Generate metrics
 
 ```
 multi-hop-reasoning/
-├── core/              # Core library
-│   ├── kg.py          # Knowledge graph loading & path sampling
-│   ├── dataset.py     # MCQ generation
-│   ├── reward.py      # Reward computation
-│   ├── infer.py       # Model inference
-│   ├── mlx_sft.py     # LoRA training with MLX
-│   ├── rsft.py        # Rejection sampling fine-tuning
-│   └── eval.py        # Metrics generation
-├── data/              # Data files
-│   ├── kg.json        # Knowledge graph
-│   ├── train.jsonl    # Training examples (1-3 hops)
-│   ├── eval.jsonl     # Evaluation examples (4-5 hops)
-│   └── runs/          # Training run outputs
-├── demo/              # Demo web application
-├── spec/              # Specifications
-│   ├── schemas.md     # Data schemas
-│   └── reward.md      # Reward function spec
-├── documentation/              # Documentation
-├── tests/             # Test suite
-└── video/             # Video production assets
+├── core/                  # Core library
+│   ├── kg.py              # Knowledge graph loading & path sampling
+│   ├── dataset.py         # MCQ generation
+│   ├── reward.py          # Reward computation
+│   ├── infer.py           # Model inference (MLX + PyTorch)
+│   ├── mlx_sft.py         # LoRA training with MLX (macOS)
+│   ├── rsft.py            # Rejection sampling fine-tuning (MLX)
+│   ├── unsloth_sft.py     # SFT with Unsloth (Linux/CUDA)
+│   ├── unsloth_rsft.py    # RSFT with Unsloth (Linux/CUDA)
+│   └── eval.py            # Metrics generation
+├── data/                  # Data files
+│   ├── kg.json            # Knowledge graph
+│   ├── train.jsonl        # Training examples (1-3 hops)
+│   ├── eval.jsonl         # Evaluation examples (4-5 hops)
+│   └── runs/              # Training run outputs
+│       └── run_360m/      # Trained SmolLM-360M model
+├── demo/                  # Demo web application
+│   ├── server.py          # Server with live inference API
+│   └── web/               # Frontend (Training, Inference, Try It, Distribution)
+├── spec/                  # Specifications
+├── documentation/         # Documentation
+├── CLAUDE.md              # AI agent instructions for continuing work
+└── tests/                 # Test suite
 ```
 
-## Model
+## Models
 
-Default: **SmolLM-135M-Instruct** (`HuggingFaceTB/SmolLM-135M-Instruct`)
+| Model | Parameters | Command |
+|-------|------------|---------|
+| SmolLM-135M | 135M | `make train` (default) |
+| SmolLM-360M | 360M | `make train-360m` (recommended for demo) |
 
-Can be changed via: `make sft MODEL=HuggingFaceTB/SmolLM-360M-Instruct`
+The 360M model produces better reasoning traces and is used by the live inference demo.
 
 ## Output Format
 
@@ -141,6 +184,22 @@ See [spec/reward.md](spec/reward.md) for full specification.
 - [documentation/process.md](documentation/process.md) - Development process and TDD guidelines
 - [documentation/tools.md](documentation/tools.md) - Development tools
 - [documentation/ai_agent_instructions.md](documentation/ai_agent_instructions.md) - AI coding agent guidelines
+
+## Cross-Platform Support
+
+### macOS (Apple Silicon) - MLX
+```bash
+make setup-mlx
+make train-360m
+```
+
+### Linux (CUDA) - Unsloth
+```bash
+make setup-unsloth
+make train-360m-unsloth
+```
+
+Unsloth provides 2x faster training with 60% less memory on NVIDIA GPUs. See [CLAUDE.md](CLAUDE.md) for detailed setup instructions.
 
 ## Requirements
 
