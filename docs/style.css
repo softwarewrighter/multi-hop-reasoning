@@ -493,6 +493,168 @@ body {
 
 .progress-bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.3s; }
 
+/* ========== TRY IT VIEW ========== */
+.tryit-notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: rgba(88, 166, 255, 0.1);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.tryit-notice.hidden { display: none; }
+.tryit-notice.error {
+    background: rgba(248, 81, 73, 0.1);
+    border-color: var(--danger);
+}
+
+.notice-icon { font-size: 18px; }
+
+.tryit-notice code {
+    background: var(--bg-input);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 12px;
+}
+
+.tryit-main {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+    min-height: 0;
+}
+
+.tryit-input-panel { flex: 0 0 40%; }
+.tryit-output-panel { flex: 1; }
+
+.tryit-input-content, .tryit-output-content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+}
+
+#tryit-question {
+    flex: 1;
+    min-height: 120px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    resize: none;
+}
+
+#tryit-question:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.example-questions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.example-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+}
+
+.example-btn {
+    padding: 4px 10px;
+    font-size: 11px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.example-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+.tryit-ask {
+    align-self: flex-start;
+    font-size: 14px;
+    padding: 10px 24px;
+}
+
+.tryit-ask.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.output-section {
+    background: var(--bg-input);
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.output-section label {
+    display: block;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.tryit-trace {
+    min-height: 80px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.tryit-answer {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--success);
+    min-height: 24px;
+}
+
+.metrics-section {
+    display: flex;
+    gap: 20px;
+    padding: 12px;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.metric-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+}
+
+.metric-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.model-info {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', Monaco, monospace;
+}
+
 /* ========== DISTRIBUTION VIEW ========== */
 .distribution-header {
     text-align: center;
@@ -705,26 +867,38 @@ body {
 .mismatch-indicator { color: var(--danger); }
 .match-indicator { color: var(--success); }
 
-/* Footer */
-.footer {
+/* Comparison Examples */
+.examples-panel {
+    margin-top: 10px;
+}
+
+.comparison-examples {
     display: flex;
-    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+    overflow-x: auto;
+}
+
+.example-card {
+    flex: 0 0 280px;
+    background: var(--bg-input);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.example-card-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
+    margin-bottom: 10px;
+}
+
+.example-card-body {
+    font-family: 'SF Mono', Monaco, monospace;
     font-size: 11px;
-    color: var(--text-dim);
-}
-
-.footer a {
-    color: var(--accent);
-    text-decoration: none;
-}
-
-.footer a:hover {
-    text-decoration: underline;
-}
-
-.footer .separator {
-    color: var(--border);
+    line-height: 1.5;
+    color: var(--success);
+    white-space: pre-wrap;
+    max-height: 150px;
+    overflow-y: auto;
 }

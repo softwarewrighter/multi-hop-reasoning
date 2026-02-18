@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi-Hop Reasoning Demo</title>
-    <link rel="stylesheet" href="/multi-hop-reasoning/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -14,6 +14,7 @@
             <div class="mode-tabs">
                 <button id="training-tab" class="tab active">Training</button>
                 <button id="inference-tab" class="tab">Inference</button>
+                <button id="tryit-tab" class="tab">Try It</button>
                 <button id="distribution-tab" class="tab">Distribution</button>
             </div>
             <div class="header-controls">
@@ -194,6 +195,58 @@
             </div>
         </div>
 
+        <!-- ========== TRY IT VIEW ========== -->
+        <div id="tryit-view" class="view">
+            <div class="tryit-notice" id="tryit-notice">
+                <span class="notice-icon">⚡</span>
+                <span>Live inference requires running <code>python demo/server.py</code> locally</span>
+            </div>
+
+            <div class="tryit-main">
+                <!-- Left: Question Input -->
+                <div class="panel tryit-input-panel">
+                    <div class="panel-header">
+                        <h2>Ask a Question</h2>
+                    </div>
+                    <div class="tryit-input-content">
+                        <textarea id="tryit-question" placeholder="Enter a DevOps troubleshooting question...&#10;&#10;Example: What causes SlowQueryPerformance?"></textarea>
+                        <div class="example-questions">
+                            <span class="example-label">Try these:</span>
+                            <button class="example-btn" data-question="What causes SlowQueryPerformance?">Slow Query</button>
+                            <button class="example-btn" data-question="My pod keeps getting OOMKilled. What should I investigate?">OOMKilled</button>
+                            <button class="example-btn" data-question="I'm seeing TLSHandshakeError in production. What's the root cause?">TLS Error</button>
+                            <button class="example-btn" data-question="The DatabaseConnectionPool is exhausted. What caused this?">DB Pool</button>
+                        </div>
+                        <button id="tryit-ask-btn" class="action-btn tryit-ask">🔮 Ask Model</button>
+                    </div>
+                </div>
+
+                <!-- Right: Response -->
+                <div class="panel tryit-output-panel">
+                    <div class="panel-header">
+                        <h2>Model Response</h2>
+                        <span id="tryit-model-info" class="model-info"></span>
+                    </div>
+                    <div class="tryit-output-content">
+                        <div class="output-section">
+                            <label>Reasoning Trace:</label>
+                            <div id="tryit-trace" class="typewriter tryit-trace"></div>
+                        </div>
+                        <div class="output-section">
+                            <label>Answer:</label>
+                            <div id="tryit-answer" class="tryit-answer"></div>
+                        </div>
+                        <div class="output-section metrics-section">
+                            <div class="metric-item">
+                                <span class="metric-label">Path Coverage</span>
+                                <span id="tryit-coverage" class="metric-value">--%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- ========== DISTRIBUTION VIEW ========== -->
         <div id="distribution-view" class="view">
             <div class="distribution-header">
@@ -294,18 +347,19 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <a href="https://github.com/softwarewrighter/multi-hop-reasoning" target="_blank">GitHub</a>
-            <span class="separator">|</span>
-            <span>Copyright (c) 2026 Michael A Wright</span>
-            <span class="separator">|</span>
-            <span>MIT License</span>
-        </footer>
+            <!-- Side-by-side Examples (if comparison data available) -->
+            <div class="panel examples-panel" id="comparison-examples-panel" style="display: none;">
+                <div class="panel-header">
+                    <h2>Same Question, Different Models</h2>
+                </div>
+                <div class="comparison-examples" id="comparison-examples">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="/multi-hop-reasoning/app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

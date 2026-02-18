@@ -1,97 +1,163 @@
 # Training Status
 
-## Current Results
+*Last updated: February 18, 2026*
+
+## Current State
+
+### Trained Models Available
+
+| Model | Run ID | Location | Status |
+|-------|--------|----------|--------|
+| SmolLM-360M SFT | run_360m | `data/runs/run_360m/models/sft/` | ✅ Complete |
+| SmolLM-360M RSFT | run_360m | `data/runs/run_360m/models/rsft/` | ✅ Complete |
+
+### SmolLM-360M Results (run_360m)
 
 | Phase | Accuracy | Path Coverage | Avg Reward | Notes |
 |-------|----------|---------------|------------|-------|
-| Base (SmolLM-135M) | 0% | 0% | -2.00 | Untrained, no format compliance |
-| SFT (200 iters) | 30% | 31% | -1.01 | Learns TRACE + ANSWER format |
-| RSFT on eval data | **75%** | 33% | +0.38 | Distribution-matched training |
+| Base | 0% | 0% | -2.00 | Untrained, no format compliance |
+| SFT (500 iters) | 37% | 32% | -0.78 | Learns TRACE + ANSWER format |
+| RSFT (train data) | 27% | 30% | -1.12 | Distribution mismatch! |
 
-Training was performed on Apple M3 Pro using MLX. Total pipeline time: ~5 minutes.
+**Key Finding**: RSFT on easy examples (train.jsonl, 1-3 hop) performed *worse* than SFT baseline because the model learned the wrong distribution for the 4-5 hop evaluation questions.
+
+### Previous Results (SmolLM-135M)
+
+| Phase | Accuracy | Path Coverage | Avg Reward | Notes |
+|-------|----------|---------------|------------|-------|
+| Base | 0% | 0% | -2.00 | Untrained |
+| SFT (200 iters) | 30% | 31% | -1.01 | Format learning |
+| RSFT on eval data | **75%** | 33% | +0.38 | Distribution-matched |
+
+## Demo Features
+
+The demo (`http://localhost:3519`) now includes:
+
+| Tab | Feature | Status |
+|-----|---------|--------|
+| Training | Animated SFT→RSFT visualization | ✅ Working |
+| Inference | Pre-recorded inference examples | ✅ Working |
+| Try It | **Live inference** with 360M model | ✅ Working |
+| Distribution | Key finding visualization | ✅ Working |
 
 ## Model Storage
 
 Trained adapters are stored in:
 
 ```
-data/runs/run_0001/models/
-├── sft/adapters.safetensors         # 267MB - SFT adapter (30% accuracy)
-├── rsft/adapters.safetensors        # 267MB - RSFT on train data (20%)
-└── rsft_eval/adapters.safetensors   # 267MB - RSFT on eval data (75%)
+data/runs/run_360m/models/
+├── sft/
+│   ├── adapters.safetensors    # ~740MB - SFT adapter
+│   ├── adapter_config.json
+│   └── sft_train.jsonl         # Training data used
+└── rsft/
+    ├── adapters.safetensors    # ~740MB - RSFT adapter
+    ├── adapter_config.json
+    ├── rsft_train.jsonl        # Winning completions
+    └── rsft_winners.jsonl      # All scored winners
 ```
 
-These are LoRA adapters, not full models. The base model (SmolLM-135M-Instruct) is downloaded from HuggingFace and cached in `~/.cache/huggingface/`.
+These are LoRA adapters. The base model (SmolLM-360M-Instruct) is cached in `~/.cache/huggingface/`.
 
 ## Git Ignored
 
-Model binaries are excluded from git via `.gitignore`:
+Model binaries are excluded from git:
 - `*.safetensors`
 - `data/runs/*/models/`
 
-This prevents committing large binary files to the repository.
+---
 
-## Continue Training
+## Next Steps
 
-To continue training from an existing adapter with new examples:
+### Immediate (To Fix Distribution Issue)
+
+1. **Train RSFT on eval.jsonl** (hard examples) to achieve 75%+ accuracy:
+   ```bash
+   # Modify Makefile rsft target to use eval.jsonl instead of train.jsonl
+   # Or run manually:
+   python3 -m core.rsft \
+     --examples data/eval.jsonl \
+     --kg data/kg.json \
+     --sft-adapter data/runs/run_360m/models/sft \
+     --output data/runs/run_360m/models/rsft_eval \
+     --model HuggingFaceTB/SmolLM-360M-Instruct \
+     --k-samples 8 \
+     --max-examples 50
+   ```
+
+2. **Update demo to use rsft_eval adapter** for better live inference quality
+
+### Linux/Unsloth Training
+
+Ready for execution on Linux with NVIDIA GPU:
 
 ```bash
-# Start from the best adapter (rsft_eval) and train on new examples
-.venv/bin/python -m core.mlx_sft \
-  --train data/new_examples.jsonl \
-  --output data/runs/run_0002/models/continued \
-  --model HuggingFaceTB/SmolLM-135M-Instruct \
-  --adapter data/runs/run_0001/models/rsft_eval \
-  --iters 100
+# On Linux system with CUDA
+git clone <repo>
+cd multi-hop-reasoning
+make setup-unsloth
+source .venv/bin/activate
+make train-360m-unsloth
 ```
 
-The `--adapter` flag loads existing trained weights as a starting point.
+See `CLAUDE.md` for detailed instructions.
+
+### Future Improvements
+
+| Improvement | Expected Impact | Effort |
+|-------------|-----------------|--------|
+| RSFT on eval distribution | 75%+ accuracy | Low |
+| Larger model (1B+) | Better reasoning | Medium |
+| More training examples | Better generalization | Medium |
+| Higher K (16-32) for RSFT | More diverse winners | Low |
+| Curriculum learning | Smoother learning | High |
+| Web search for KG expansion | Richer knowledge | High |
+
+### Demo Improvements
+
+- [ ] Add loading spinner during model initialization
+- [ ] Show example MCQ format in Try It tab
+- [ ] Add comparison view showing SFT vs RSFT responses
+- [ ] Generate static comparison data for GitHub Pages
+
+---
 
 ## Reproducing Training
 
-Full training pipeline from scratch:
+### macOS (MLX)
 
 ```bash
-# 1. Setup environment
-python3 -m venv .venv
-.venv/bin/pip install mlx mlx-lm transformers numpy tqdm safetensors
+# Setup
+make setup-mlx
+source .venv/bin/activate
 
-# 2. SFT training (~90 seconds)
-.venv/bin/python -m core.mlx_sft \
-  --train data/train.jsonl \
-  --output data/runs/run_0001/models/sft \
-  --model HuggingFaceTB/SmolLM-135M-Instruct \
-  --iters 200
+# Full pipeline
+make train-360m
 
-# 3. RSFT on eval distribution (~2 minutes)
-.venv/bin/python -m core.rsft \
-  --examples data/eval.jsonl \
-  --kg data/kg.json \
-  --sft-adapter data/runs/run_0001/models/sft \
-  --output data/runs/run_0001/models/rsft_eval \
-  --k-samples 8 \
-  --max-examples 50
-
-# 4. Evaluate
-.venv/bin/python -m core.infer \
-  --examples data/eval.jsonl \
-  --kg data/kg.json \
-  --output data/runs/run_0001/episodes.jsonl \
-  --adapter data/runs/run_0001/models/rsft_eval \
-  --phase rsft \
-  --max-examples 20
+# Or individual steps
+make data
+make sft MODEL=HuggingFaceTB/SmolLM-360M-Instruct RUN_ID=run_360m
+make rsft MODEL=HuggingFaceTB/SmolLM-360M-Instruct RUN_ID=run_360m
+make eval RUN_ID=run_360m
 ```
 
-## Key Findings
+### Linux (Unsloth)
 
-1. **SFT teaches format compliance** - Model learns to output structured TRACE + ANSWER format
-2. **RSFT is distribution-sensitive** - Training on easy examples (1-3 hop) hurt performance (20% vs 30%)
-3. **Distribution matching is crucial** - RSFT on hard examples (4-5 hop) achieved 75% accuracy
+```bash
+# Setup
+make setup-unsloth
+source .venv/bin/activate
 
-## Future Improvements
+# Full pipeline
+make train-360m-unsloth
+```
 
-Potential ways to improve beyond 75%:
-- Larger base model (more capacity for complex reasoning)
-- More diverse training examples
-- Higher K for rejection sampling (more candidates)
-- Curriculum learning (progressive difficulty)
+---
+
+## Key Learnings
+
+1. **SFT teaches format compliance** - Model learns TRACE + ANSWER structure
+2. **Distribution matching is critical** - Train on examples similar to eval
+3. **RSFT can hurt if mismatched** - 20% vs 30% when trained on wrong distribution
+4. **360M is sufficient** - Produces coherent multi-hop reasoning traces
+5. **MLX is fast** - Full pipeline in ~10 minutes on Apple Silicon

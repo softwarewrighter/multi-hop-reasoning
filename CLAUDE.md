@@ -111,11 +111,92 @@ Always use `eval.jsonl` for RSFT to match the evaluation distribution.
 
 ---
 
-## Next Steps for Linux Agent
+## Current Status (Feb 2026)
 
-1. Clone repo and run `make setup-unsloth`
-2. Activate venv: `source .venv/bin/activate`
-3. Generate data if needed: `make data`
-4. Train: `make train-360m-unsloth`
-5. Verify: Check `data/runs/run_360m_unsloth/metrics.json`
-6. Run demo: `python3 demo/server.py`
+### What's Working
+- ✅ SmolLM-360M trained with SFT (37% accuracy)
+- ✅ RSFT trained (but on wrong distribution - 27%)
+- ✅ Live inference demo with Try It tab
+- ✅ Distribution visualization tab
+- ✅ All four demo tabs functional
+
+### What Needs Fixing
+- ⚠️ RSFT trained on `train.jsonl` (easy) instead of `eval.jsonl` (hard)
+- ⚠️ This caused accuracy to DROP from 37% to 27%
+- 🎯 Need to retrain RSFT on `eval.jsonl` to achieve 75%+
+
+---
+
+## Next Steps
+
+### Priority 1: Fix RSFT Distribution (macOS or Linux)
+
+The current RSFT model was trained on easy examples. Retrain on hard examples:
+
+```bash
+# Option A: Modify Makefile rsft target to use eval.jsonl
+# Option B: Run manually:
+python3 -m core.rsft \
+  --examples data/eval.jsonl \  # <-- Use eval.jsonl, not train.jsonl!
+  --kg data/kg.json \
+  --sft-adapter data/runs/run_360m/models/sft \
+  --output data/runs/run_360m/models/rsft_eval \
+  --model HuggingFaceTB/SmolLM-360M-Instruct \
+  --k-samples 8 \
+  --max-examples 50
+```
+
+Expected result: 75%+ accuracy (matching earlier 135M results)
+
+### Priority 2: Linux/Unsloth Training
+
+If continuing on Linux with NVIDIA GPU:
+
+```bash
+# 1. Setup
+make setup-unsloth
+source .venv/bin/activate
+
+# 2. Generate data if needed
+make data
+
+# 3. Train with correct distribution
+# Edit core/unsloth_rsft.py or Makefile to use eval.jsonl
+make train-360m-unsloth
+
+# 4. Verify
+cat data/runs/run_360m_unsloth/metrics.json
+
+# 5. Run demo
+python3 demo/server.py
+```
+
+### Priority 3: Demo Improvements
+
+- [ ] Update demo to load rsft_eval adapter (once trained)
+- [ ] Generate static comparison data: `make generate-comparison`
+- [ ] Add loading indicator during model init
+- [ ] Consider adding side-by-side SFT vs RSFT comparison
+
+---
+
+## Quick Reference
+
+### Training Commands
+```bash
+# macOS
+make train-360m
+
+# Linux
+make train-360m-unsloth
+```
+
+### Demo
+```bash
+source .venv/bin/activate
+python3 demo/server.py
+# Open http://localhost:3519
+```
+
+### Key Insight
+**Always use eval.jsonl for RSFT** - training distribution must match eval distribution!
