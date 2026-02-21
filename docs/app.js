@@ -90,23 +90,50 @@ async function init() {
         state.isLiveMode = false;
     }
 
+    // Try API first (local server), fall back to static files (GitHub Pages)
     try {
-        const [kgRes, epRes] = await Promise.all([
-            fetch('/api/kg'),
-            fetch('/api/episodes/run_0001')
-        ]);
-        state.kg = await kgRes.json();
-        const data = await epRes.json();
-        state.episodes = data.episodes || [];
+        let kgData, episodesData;
+
+        // Try API endpoints first
+        const kgRes = await fetch('/api/kg');
+        if (kgRes.ok) {
+            kgData = await kgRes.json();
+            const epRes = await fetch('/api/episodes/run_0001');
+            const data = await epRes.json();
+            episodesData = data.episodes || [];
+        } else {
+            throw new Error('API not available');
+        }
+
+        state.kg = kgData;
+        state.episodes = episodesData;
         state.trainingData = state.episodes.filter(e => e.phase === 'sft');
         state.testData = state.episodes.filter(e => e.phase === 'rsft');
     } catch (e) {
-        console.error('Failed to load:', e);
+        // Fall back to static JSON files (for GitHub Pages)
+        console.log('API not available, loading static files...');
+        try {
+            const [kgRes, epRes] = await Promise.all([
+                fetch('kg.json'),
+                fetch('episodes.json')
+            ]);
+            state.kg = await kgRes.json();
+            const episodesData = await epRes.json();
+            // Static file has episodes array directly or wrapped
+            state.episodes = Array.isArray(episodesData) ? episodesData : (episodesData.episodes || []);
+            state.trainingData = state.episodes.filter(e => e.phase === 'sft');
+            state.testData = state.episodes.filter(e => e.phase === 'rsft');
+        } catch (e2) {
+            console.error('Failed to load static files:', e2);
+        }
     }
 
-    // Try to load comparison data
+    // Try to load comparison data (API first, then static file)
     try {
-        const compRes = await fetch('/api/comparison');
+        let compRes = await fetch('/api/comparison');
+        if (!compRes.ok) {
+            compRes = await fetch('comparison.json');
+        }
         if (compRes.ok) {
             state.comparisonData = await compRes.json();
             if (!state.comparisonData.error) {
