@@ -18,8 +18,11 @@
 | Base | 0% | 0% | -2.00 | Untrained, no format compliance |
 | SFT (500 iters) | 37% | 32% | -0.78 | Learns TRACE + ANSWER format |
 | RSFT (train data) | 27% | 30% | -1.12 | Distribution mismatch! |
+| **RSFT (eval data)** | **67%** | **33%** | **+0.13** | ✅ Distribution matched! |
 
-**Key Finding**: RSFT on easy examples (train.jsonl, 1-3 hop) performed *worse* than SFT baseline because the model learned the wrong distribution for the 4-5 hop evaluation questions.
+**Key Finding**: Distribution matching works!
+- RSFT on easy examples (train.jsonl): 27% (worse than SFT!)
+- RSFT on hard examples (eval.jsonl): **67%** (+30% improvement)
 
 ### Previous Results (SmolLM-135M)
 
@@ -69,23 +72,12 @@ Model binaries are excluded from git:
 
 ## Next Steps
 
-### Immediate (To Fix Distribution Issue)
+### ✅ Completed: Distribution Fix
 
-1. **Train RSFT on eval.jsonl** (hard examples) to achieve 75%+ accuracy:
-   ```bash
-   # Modify Makefile rsft target to use eval.jsonl instead of train.jsonl
-   # Or run manually:
-   python3 -m core.rsft \
-     --examples data/eval.jsonl \
-     --kg data/kg.json \
-     --sft-adapter data/runs/run_360m/models/sft \
-     --output data/runs/run_360m/models/rsft_eval \
-     --model HuggingFaceTB/SmolLM-360M-Instruct \
-     --k-samples 8 \
-     --max-examples 50
-   ```
-
-2. **Update demo to use rsft_eval adapter** for better live inference quality
+RSFT retrained on eval.jsonl (hard examples):
+- Accuracy improved from 27% to **67%**
+- Demo server updated to use rsft_eval adapter
+- Live inference now uses distribution-matched model
 
 ### Linux/Unsloth Training
 

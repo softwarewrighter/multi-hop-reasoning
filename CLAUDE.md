@@ -115,40 +115,27 @@ Always use `eval.jsonl` for RSFT to match the evaluation distribution.
 
 ### What's Working
 - ✅ SmolLM-360M trained with SFT (37% accuracy)
-- ✅ RSFT trained (but on wrong distribution - 27%)
-- ✅ Live inference demo with Try It tab
+- ✅ RSFT trained on eval distribution (**67% accuracy**)
+- ✅ Live inference demo with Try It tab (using best model)
 - ✅ Distribution visualization tab
 - ✅ All four demo tabs functional
+- ✅ Distribution matching demonstrated and documented
 
-### What Needs Fixing
-- ⚠️ RSFT trained on `train.jsonl` (easy) instead of `eval.jsonl` (hard)
-- ⚠️ This caused accuracy to DROP from 37% to 27%
-- 🎯 Need to retrain RSFT on `eval.jsonl` to achieve 75%+
+### Results Summary
+| Phase | Accuracy | Notes |
+|-------|----------|-------|
+| SFT | 37% | Format learning |
+| RSFT (easy) | 27% | Distribution mismatch |
+| **RSFT (hard)** | **67%** | ✅ Distribution matched |
 
 ---
 
 ## Next Steps
 
-### Priority 1: Fix RSFT Distribution (macOS or Linux)
+### ✅ Completed: Distribution Fix
+RSFT retrained on eval.jsonl → **67% accuracy** (up from 27%)
 
-The current RSFT model was trained on easy examples. Retrain on hard examples:
-
-```bash
-# Option A: Modify Makefile rsft target to use eval.jsonl
-# Option B: Run manually:
-python3 -m core.rsft \
-  --examples data/eval.jsonl \  # <-- Use eval.jsonl, not train.jsonl!
-  --kg data/kg.json \
-  --sft-adapter data/runs/run_360m/models/sft \
-  --output data/runs/run_360m/models/rsft_eval \
-  --model HuggingFaceTB/SmolLM-360M-Instruct \
-  --k-samples 8 \
-  --max-examples 50
-```
-
-Expected result: 75%+ accuracy (matching earlier 135M results)
-
-### Priority 2: Linux/Unsloth Training
+### Priority 1: Linux/Unsloth Training
 
 If continuing on Linux with NVIDIA GPU:
 

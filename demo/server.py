@@ -32,12 +32,13 @@ def get_model():
     if _model_state["model"] is None:
         print("Loading inference model (first request)...")
 
-        # Try to find the best available adapter
+        # Try to find the best available adapter (prefer distribution-matched RSFT)
         adapter_paths = [
-            DATA_DIR / "runs" / "run_360m" / "models" / "rsft",  # 360M RSFT (best)
-            DATA_DIR / "runs" / "run_0001" / "models" / "rsft",  # 135M RSFT
-            DATA_DIR / "runs" / "run_360m" / "models" / "sft",   # 360M SFT
-            DATA_DIR / "runs" / "run_0001" / "models" / "sft",   # 135M SFT
+            DATA_DIR / "runs" / "run_360m" / "models" / "rsft_eval",  # 360M RSFT on hard (67%)
+            DATA_DIR / "runs" / "run_360m" / "models" / "rsft",       # 360M RSFT on easy (27%)
+            DATA_DIR / "runs" / "run_0001" / "models" / "rsft",       # 135M RSFT
+            DATA_DIR / "runs" / "run_360m" / "models" / "sft",        # 360M SFT (37%)
+            DATA_DIR / "runs" / "run_0001" / "models" / "sft",        # 135M SFT
         ]
 
         adapter_path = None

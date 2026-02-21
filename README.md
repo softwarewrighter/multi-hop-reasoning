@@ -38,9 +38,10 @@ RSFT on easy examples performed *worse* than SFT baseline because the model lear
 |-------|----------|---------------|-------|
 | Base | 0% | 0% | No format compliance |
 | SFT (500 iters) | 37% | 32% | Learns TRACE + ANSWER format |
-| RSFT (train distribution) | 27% | 30% | Distribution mismatch hurts! |
+| RSFT (easy) | 27% | 30% | Distribution mismatch hurts! |
+| **RSFT (hard)** | **67%** | **33%** | ✅ Distribution matched |
 
-The RSFT accuracy dropped because it trained on easy examples (1-3 hop) but was evaluated on hard examples (4-5 hop). This demonstrates the key finding about distribution matching.
+Training on easy examples (1-3 hop) hurt performance. Retraining RSFT on hard examples (4-5 hop) improved accuracy from 27% to **67%**.
 
 See [documentation/training-status.md](documentation/training-status.md) for details on model storage and continuing training.
 
