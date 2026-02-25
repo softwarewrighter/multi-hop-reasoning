@@ -178,10 +178,19 @@ See [spec/reward.md](spec/reward.md) for full specification.
 
 ## Documentation
 
+### Key Results
+- [documentation/results.md](documentation/results.md) - **Full results with visualizations** (accuracy charts, paper comparison)
+- [documentation/knowledge-graph.md](documentation/knowledge-graph.md) - **Knowledge graph as "training wheels"** (entity types, path examples, reward flow)
+
+### Project Guides
 - [documentation/eli5.md](documentation/eli5.md) - ELI5 explanation of the project and key findings
 - [documentation/training-status.md](documentation/training-status.md) - Current results, model storage, continuing training
+
+### Specifications
 - [spec/schemas.md](spec/schemas.md) - Data file schemas (kg.json, train.jsonl, episodes.jsonl, etc.)
 - [spec/reward.md](spec/reward.md) - Reward function specification
+
+### Development
 - [documentation/process.md](documentation/process.md) - Development process and TDD guidelines
 - [documentation/tools.md](documentation/tools.md) - Development tools
 - [documentation/ai_agent_instructions.md](documentation/ai_agent_instructions.md) - AI coding agent guidelines
